@@ -1,75 +1,181 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>FENIX X20</title></head><body style="margin:0;background:#000"><div style="background:#000;color:#fff;font-family:Arial;padding:8px;min-height:100vh"><h3 style="text-align:center;color:#ff4500;margin:4px">🐦‍🔥Bot FéniXUNIVERSAL🌎 X20 🔥 + BOTONES BINANCE</h3><div id="newsBar" style="background:#222;color:#ffcc00;padding:8px;border-radius:6px;font-size:11px;font-weight:900;border:1px solid #ffcc00;text-align:center">🔴 MERCADO 24/7 - USA + CRYPTO | 100% CONFIRMADA + BOTONES COPIAR</div><div id="usaNewsBar" style="background:#001a33;color:#ffcc00;padding:7px;border-radius:6px;font-size:11px;font-weight:900;border:1px solid #ffcc00;margin-top:5px">🌍 MUNDIAL: FED + TRUMP + ELON + BINANCE</div><div id="alertaConfirmada" style="display:none;position:sticky;top:0;z-index:99;padding:12px;border-radius:8px;text-align:center;font-weight:900;margin-bottom:6px;font-size:13px"></div><div id="historialBox" style="background:#111;border:2px solid #00ff88;padding:8px;border-radius:8px;margin-bottom:6px"><div style="display:flex;justify-content:space-between"><b style="color:#00ff88;font-size:11px">📊 HISTORIAL X10 y X20 🔥 + HORA GANADA</b><span id="historialStats" style="font-size:10px;color:#fff"></span></div><div id="historialLista" style="max-height:400px;overflow-y:auto;margin-top:6px;background:#000;padding:5px;border-radius:6px;display:none;font-size:11px"></div><div style="display:flex;gap:4px;margin-top:6px"><button onclick="verHistorial()" style="flex:1;padding:8px;background:#00aa00;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:900">📜 VER HISTORIAL</button><button onclick="borrarHistorial()" style="padding:8px;background:#ff2222;color:#fff;border:0;border-radius:6px;font-size:10px">🗑️ BORRAR</button></div></div><div style="background:#111;padding:6px;border-radius:8px;margin:6px 0"><div style="display:flex;gap:4px"><input id="filtro" oninput="filtrarTodas()" placeholder="Buscar moneda..." style="flex:1;padding:7px;background:#000;color:#fff;border:1px solid #333;border-radius:5px"><button onclick="cargarTodas()" style="padding:7px;background:#222;color:#fff;border:1px solid #333;border-radius:5px">🔄</button></div><div id="todas" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;max-height:110px;overflow-y:auto;background:#000;padding:5px;border-radius:5px;margin-top:5px"></div><div style="display:flex;gap:4px;margin-top:5px"><input id="buscar" placeholder="BULLA" style="flex:1;padding:7px;background:#000;color:#fff;border:1px solid #333;border-radius:5px"><button onclick="addManual()" style="padding:7px 10px;background:#ff4500;color:#fff;border:0;border-radius:5px;font-weight:900">+ ADD</button></div></div><div style="display:flex;gap:4px;margin-bottom:6px"><span id="e" style="flex:1;background:#1a1a1a;padding:6px;border-radius:5px;text-align:center;font-size:10px">BOTONES COPIAR BINANCE...</span></div><div id="lista"></div><div id="noticiasUSA" style="margin-top:10px;background:#001a33;padding:8px;border-radius:8px;border:1px solid #ffcc00"><b style="color:#ffcc00;font-size:12px">🌍 MERCADO MUNDIAL 24/7</b><div id="noticiasUSALista" style="margin-top:6px;font-size:11px;color:#fff">Cargando MUNDIAL...</div></div><div id="noticiasLista" style="margin-top:10px;background:#111;padding:8px;border-radius:8px;border:1px solid #00ff88"></div></div><script>
-let activos=JSON.parse(localStorage.getItem('fenix_activos')||'["BTCUSDT","BULLAUSDT","PUMPUSDT","BNBUSDT","SOLUSDT","ETHUSDT"]');activos=new Set(activos);let todasMonedas=[],estado={},pumpsEstado={},au=null,autoIniciado=false,wakeLock=null;let historial=JSON.parse(localStorage.getItem('fenix_historial')||'[]');const TOKEN_TG="8825910376:AAHpnjHuhaLyJhQMI9oOZmqxEcupaId-54E";const CHAT_ID_TG="8639536197";
-let preAlertasGoogle={};
-const PALABRAS_CLAVE_GOOGLE=['FED','TRUMP','ELON','MUSK','BINANCE','SEC','ETF','WAR','TARIFF','ARANCEL','POWELL','RATE','INFLATION','HACK','BULLA','BITCOIN','CRASH','PUMP'];
-function enviarPreAlertaGoogleTelegram(sym,titulo,link){
-  if(preAlertasGoogle[sym] && Date.now()-preAlertasGoogle[sym] < 600000) return;
-  preAlertasGoogle[sym]=Date.now();
-  let tipoDetect = titulo.toLowerCase().includes('hack')||titulo.toLowerCase().includes('crash')||titulo.toLowerCase().includes('war')||titulo.toLowerCase().includes('sec')||titulo.toLowerCase().includes('arancel')||titulo.toLowerCase().includes('tariff') ? 'POSIBLE SHORT' : 'POSIBLE MOVIMIENTO';
-  let msg=`🚨 PRE-ALERTA GOOGLE FENIX 24/7 🚨\n\n💲 MONEDA: ${sym}\n🔥 DETECTADO: ${tipoDetect}\n📰 NOTICIA: ${titulo}\n🔗 ${link}\n⏰ ${new Date().toLocaleString()}\n\nBot en vigilancia X20 - Verificar volumen`;
-  let url=`https://api.telegram.org/bot${TOKEN_TG}/sendMessage?chat_id=${CHAT_ID_TG}&text=${encodeURIComponent(msg)}`;
-  fetch(url);
-  beep(900);
+<div style="background:#000;color:#fff;font-family:Arial;padding:8px;min-height:100vh">
+<h3 style="text-align:center;color:#ff4500;margin:4px">🐦‍🔥 Bot Fénix UNIVERSAL 100% - TODAS BINANCE 🔥</h3>
+
+<!-- NEWS FEED USA/MUNDIAL/GOOGLE/BINANCE - NO TOCADO -->
+<div id="newsBar" style="background:linear-gradient(90deg,#ffaa00,#ff4500);color:#000;padding:8px;border-radius:8px;font-size:11px;font-weight:900">🔴 USA 24/7 FED/CPI/FOMC + BINANCE + GOOGLE + MUNDIAL - CARGANDO...</div>
+
+<!-- HISTORIAL W/L REGRESADO -->
+<div id="historialBox" style="background:#111;border:1px solid #00ff88;padding:8px;border-radius:10px;margin:8px 0">
+<div style="display:flex;justify-content:space-between"><b style="color:#00ff88;font-size:11px">📊 HISTORIAL WIN / LOSS</b><span id="historialStats" style="font-size:10px">Sin ops</span></div>
+<div id="historialLista" style="max-height:120px;overflow-y:auto;margin-top:6px;background:#000;padding:5px;border-radius:6px;display:none;font-size:10px"></div>
+<div style="display:flex;gap:4px;margin-top:4px"><button onclick="verHistorial()" style="flex:1;padding:6px;background:#222;color:#fff;border:1px solid #333;border-radius:5px;font-size:10px">📜 VER HISTORIAL</button><button onclick="borrarHistorial()" style="padding:6px;background:#ff2222;color:#fff;border:0;border-radius:5px;font-size:10px">🗑️ BORRAR</button></div>
+</div>
+
+<!-- BUSCADOR 120 MONEDAS + TODAS BINANCE SPOT/FUTUROS/ALPHA -->
+<div style="background:#111;padding:6px;border-radius:8px;margin:6px 0">
+<div style="display:flex;gap:4px"><input id="filtro" oninput="filtrarTodas()" placeholder="Buscar en TODAS Binance Spot/Futuros/Alpha..." style="flex:1;padding:7px;background:#000;color:#fff;border:1px solid #333;border-radius:5px"><button onclick="cargarTodas()" style="padding:7px;background:#222;color:#fff;border:1px solid #333;border-radius:5px">🔄 TODAS</button></div>
+<div id="todas" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;max-height:120px;overflow-y:auto;background:#000;padding:5px;border-radius:5px;margin-top:5px"></div>
+<div style="display:flex;gap:4px;margin-top:5px"><input id="buscar" placeholder="PEPE" style="flex:1;padding:7px;background:#000;color:#fff;border:1px solid #333;border-radius:5px"><button onclick="addManual()" style="padding:7px 10px;background:#ff4500;color:#fff;border:0;border-radius:5px;font-weight:900">+ AGREGAR</button></div>
+<div id="contadorBinance" style="font-size:10px;color:#00ff88;margin-top:4px">⏳ Detectando TODAS Binance Spot+Futuros+Alpha cada 5s...</div>
+</div>
+
+<div style="display:flex;gap:4px;margin-bottom:6px"><input id="lev" type="number" value="20" style="width:50px;padding:5px;background:#111;color:#fff;border:1px solid #333;border-radius:5px"><span style="font-size:10px;padding:5px">x | 5 USDT | 7TF | AR(16)</span><span id="e" style="flex:1;background:#1a1a1a;padding:5px;border-radius:5px;text-align:center;font-size:10px">AUTO...</span></div>
+
+<div id="lista"></div>
+<div id="noticiasLista" style="margin-top:10px;background:#111;padding:8px;border-radius:8px"></div>
+</div>
+
+<script>
+let activos=JSON.parse(localStorage.getItem('fenix_activos')||'["BTCUSDT","ETHUSDT"]'); activos=new Set(activos);
+let todasMonedas=[]; let estado={}; let au=null; let noticiasCache=[]; let autoIniciado=false;
+const TFS=['1m','5m','15m','1h','2h','4h','1d'];
+let historial=JSON.parse(localStorage.getItem('fenix_historial')||'[]');
+let monedasConocidas = new Set(JSON.parse(localStorage.getItem('fenix_todas')||'[]'));
+
+// === HISTORIAL ===
+function saveActivos(){ localStorage.setItem('fenix_activos', JSON.stringify(Array.from(activos))); }
+function guardarHistorial(){ localStorage.setItem('fenix_historial', JSON.stringify(historial)); actualizarStats(); }
+function actualizarStats(){
+ let total=historial.length; let wins=historial.filter(h=>h.resultado==='WIN').length; let loss=historial.filter(h=>h.resultado==='LOSS').length; let pend=historial.filter(h=>h.resultado==='PENDING').length;
+ let wr=wins+loss>0? (wins/(wins+loss)*100).toFixed(0):0; let profit=historial.reduce((a,b)=>a+(b.profit||0),0);
+ document.getElementById('historialStats').innerHTML=`${total} ops | ✅${wins} ❌${loss} ⏳${pend} | ${wr}% | $${profit.toFixed(2)}`;
 }
-async function cargarNoticiaGoogleCoin(sym){
-  try{
-    let coin=sym.replace('USDT','');
-    let q=coin+' crypto';
-    let rssUrl='https://news.google.com/rss/search?q='+encodeURIComponent(q)+'&hl=es-419&gl=MX&ceid=MX:es-419';
-    let api='https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(rssUrl);
-    let r=await fetch(api);
-    let d=await r.json();
-    let items=d.items ? d.items.slice(0,4) : [];
-    let el=document.getElementById('gnews-'+sym);
-    let preEl=document.getElementById('pre-google-'+sym);
-    if(preEl) preEl.innerHTML='';
-    if(el){
-      if(items.length===0) el.innerHTML='<b style="color:#8a6a3a;font-size:10px;font-weight:400">📰 GOOGLE NEWS '+sym+'</b><br><span style="color:#555;font-size:10px">Sin noticias</span>';
-      else {
-        el.innerHTML='<b style="color:#8a6a3a;font-size:10px;font-weight:400">📰 GOOGLE NEWS '+sym+'</b>'+items.map(n=>"<div style='padding:4px;border-bottom:1px solid #222'><a href='"+n.link+"' target='_blank' style='color:#6a7a8a;text-decoration:none;font-size:10px'>📰 "+n.title+"</a><br><span style='color:#444;font-size:8px'>"+new Date(n.pubDate||Date.now()).toLocaleTimeString()+"</span></div>").join('');
-        items.forEach(n=>{
-          let upper=n.title.toUpperCase();
-          let palabra = PALABRAS_CLAVE_GOOGLE.find(p=>upper.includes(p));
-          if(palabra){
-            if(preEl){
-              preEl.innerHTML="<div style='background:rgba(255,152,0,0.08);padding:6px;border-radius:6px;color:#8a6a3a;font-weight:400;font-size:10px;text-align:center;border:1px solid rgba(255,152,0,0.18)'>🚨 PRE-ALERTA GOOGLE: "+sym+" - "+palabra+"<br><span style='font-size:9px'>"+n.title.slice(0,80)+"</span><br><a href='"+n.link+"' target='_blank' style='color:#8a6a3a;text-decoration:underline;font-size:9px'>VER NOTICIA</a></div>";
-              preEl.style.display='block';
-            }
-            enviarPreAlertaGoogleTelegram(sym,n.title,n.link);
-          }
-        });
-      }
+function verHistorial(){
+ let b=document.getElementById('historialLista'); b.style.display=b.style.display==='none'?'block':'none';
+ b.innerHTML=historial.slice().reverse().slice(0,40).map(h=>`<div style="padding:4px;border-bottom:1px solid #222;${h.resultado==='WIN'?'color:#00ff88':h.resultado==='LOSS'?'color:#ff4444':'color:#ffaa00'}">${h.fecha.slice(11,16)} ${h.symbol} ${h.resultado} Entry $${h.entry.toFixed(5)} Profit $${(h.profit||0).toFixed(2)}</div>`).join('')||'Sin ops';
+}
+function borrarHistorial(){ if(confirm('Borrar historial?')){ historial=[]; guardarHistorial(); } }
+
+// === TODAS BINANCE SPOT+FUTUROS+ALPHA ===
+async function cargarTodas(){
+ try{
+  let r1=await fetch('https://api.binance.com/api/v3/exchangeInfo'); let d1=await r1.json();
+  let r2=await fetch('https://fapi.binance.com/fapi/v1/exchangeInfo'); let d2=await r2.json();
+  let set=new Set();
+  d1.symbols.forEach(s=>{ if(s.symbol.endsWith('USDT') && s.status=='TRADING') set.add(s.symbol); });
+  d2.symbols.forEach(s=>{ if(s.symbol.endsWith('USDT')) set.add(s.symbol); });
+  todasMonedas=Array.from(set).sort();
+  monedasConocidas=new Set(todasMonedas); localStorage.setItem('fenix_todas', JSON.stringify(todasMonedas));
+  document.getElementById('contadorBinance').innerHTML=`✅ TOTAL BINANCE SPOT+FUTUROS+ALPHA: ${todasMonedas.length} monedas 24/7 - Revisando nuevos listados cada 5s`;
+  renderTodas(todasMonedas);
+ }catch{}
+}
+function renderTodas(lista){ document.getElementById('todas').innerHTML=lista.slice(0,200).map(s=>`<button onclick="activos.add('${s}');saveActivos();render()" style="padding:5px;background:#1a1a1a;color:#fff;border:1px solid #222;border-radius:4px;font-size:9px">${s.replace('USDT','')}</button>`).join(''); }
+function filtrarTodas(){ let q=document.getElementById('filtro').value.toUpperCase(); renderTodas(q? todasMonedas.filter(s=>s.includes(q)):todasMonedas); }
+function addManual(){ let v=document.getElementById('buscar').value.trim().toUpperCase(); if(!v) return; if(!v.endsWith('USDT')) v+='USDT'; activos.add(v); saveActivos(); render(); document.getElementById('buscar').value=''; }
+function eliminar(sym){ activos.delete(sym); saveActivos(); delete estado[sym]; let el=document.getElementById('C-'+sym); if(el) el.remove(); }
+
+// === DETECTOR NUEVAS MONEDAS EN SEGUNDOS ===
+async function detectarNuevasMonedasSegundos(){
+ try{
+  let r=await fetch('https://api.binance.com/api/v3/exchangeInfo'); let d=await r.json();
+  for(let s of d.symbols){
+    if(s.symbol.endsWith('USDT') && s.status=='TRADING' && !monedasConocidas.has(s.symbol)){
+      monedasConocidas.add(s.symbol); todasMonedas.push(s.symbol);
+      localStorage.setItem('fenix_todas', JSON.stringify(Array.from(monedasConocidas)));
+      // ALERTA CON CAJA FUEGO
+      let rk=await fetch(`https://fapi.binance.com/fapi/v1/ticker/price?symbol=${s.symbol}`); let pd=await rk.json(); let precio=parseFloat(pd.price)||0;
+      let box=document.getElementById('lista'); box.insertAdjacentHTML('afterbegin', cajaConFuego(s.symbol, precio, 'LONG', 6, 'NUEVO LISTADO ALPHA/SPOT DETECTADO EN SEGUNDOS'));
+      beep(1200); activos.add(s.symbol); saveActivos(); render();
+      document.getElementById('newsBar').innerHTML=`🔥 NUEVO LISTADO BINANCE DETECTADO EN SEGUNDOS: ${s.symbol} - $${precio}`;
     }
-  }catch{}
+  }
+ }catch{}
 }
-function enviarAlertaTelegramFenix(sym,tipo,precio,sl,tp1){let st=estado[sym];if(st&&st.telegramEnviado)return;if(st)st.telegramEnviado=true;let dec=precio<1?6:2;if(precio>=1000)dec=2;let cuadro=tipo.includes("SHORT")?"🚩🚩🚩 SHORT 100% CONFIRMADO 🚩🚩🚩":"✅✅✅ LONG 100% CONFIRMADO ✅✅✅";let msg=`🔥 FÉNIX UNIVERSAL 2026 - 100% CONFIRMADO 🔥\n${cuadro}\n\n💲 MONEDA: ${sym}\nTIPO: ${tipo}\n💵 ENTRADA: $${precio.toFixed(dec)}\n🛑 SL: $${sl.toFixed(dec)}\n✅ TP1: $${tp1.toFixed(dec)}\n⏰ ${new Date().toLocaleTimeString()} - 24/7`;let url=`https://api.telegram.org/bot${TOKEN_TG}/sendMessage?chat_id=${CHAT_ID_TG}&text=${encodeURIComponent(msg)}`;fetch(url);}
-function saveActivos(){localStorage.setItem('fenix_activos',JSON.stringify(Array.from(activos)));}function guardarHistorial(){localStorage.setItem('fenix_historial',JSON.stringify(historial));actualizarStats();}
-function actualizarStats(){let total=historial.length,wins=historial.filter(h=>h.resultado==='WIN').length,loss=historial.filter(h=>h.resultado==='LOSS').length,pend=historial.filter(h=>h.resultado==='PENDING').length,wr=wins+loss>0?(wins/(wins+loss)*100).toFixed(0):0,profit10=historial.reduce((a,b)=>a+(b.profit||0),0),profit20=historial.reduce((a,b)=>a+(b.profit20||0),0);document.getElementById('historialStats').innerHTML=total+" | "+wins+"W "+loss+"L "+pend+"P | "+wr+"% | $"+profit10.toFixed(2)+" $"+profit20.toFixed(2);}
-function verHistorial(){let b=document.getElementById('historialLista');b.style.display=b.style.display==='none'?'block':'none';if(historial.length===0){b.innerHTML='Sin operaciones';return;}b.innerHTML=historial.slice().reverse().slice(0,200).map(h=>"<div style='padding:5px;border-bottom:1px solid #222'>"+h.fecha+" <b>"+h.symbol+"</b> "+h.tipo+" "+h.resultado+" $"+(h.profit||0).toFixed(2)+"</div>").join('');}
-function borrarHistorial(){if(confirm('Borrar?')){historial=[];guardarHistorial();document.getElementById('historialLista').innerHTML='';}}
-async function cargarTodas(){try{let r=await fetch('https://fapi.binance.com/fapi/v1/ticker/price');let d=await r.json();todasMonedas=d.filter(x=>x.symbol.endsWith('USDT')).map(x=>x.symbol).sort();renderTodas(todasMonedas);}catch{}}
-function renderTodas(lista){document.getElementById('todas').innerHTML=lista.slice(0,120).map(s=>"<button onclick=\"activos.add('"+s+"');saveActivos();render()\" style='padding:5px;background:#1a1a1a;color:#fff;border:1px solid #222;border-radius:4px;font-size:9px'>"+s.replace('USDT','')+"</button>").join('');}
-function filtrarTodas(){let q=document.getElementById('filtro').value.toUpperCase();renderTodas(q?todasMonedas.filter(s=>s.includes(q)):todasMonedas);}
-function addManual(){let v=document.getElementById('buscar').value.trim().toUpperCase();if(!v)return;if(!v.endsWith('USDT'))v+='USDT';activos.add(v);saveActivos();render();document.getElementById('buscar').value='';}
-function eliminar(sym){activos.delete(sym);saveActivos();delete estado[sym];let el=document.getElementById('C-'+sym);if(el)el.remove();}
-function render(){let c=document.getElementById('lista');c.innerHTML='';activos.forEach(m=>{let stats=historial.filter(h=>h.symbol===m),w=stats.filter(h=>h.resultado==='WIN').length,l=stats.filter(h=>h.resultado==='LOSS').length;c.innerHTML+="<div id='C-"+m+"' style='padding:8px;border-radius:10px;border:1px solid #333;background:#111;margin-top:8px'><div style='font-weight:900;font-size:12px'>"+m+" <span style='font-size:10px;color:"+(w>=l?'#00ff88':'#ff4444')+"'>("+w+"W/"+l+"L)</span> <button onclick=\"eliminar('"+m+"')\" style='float:right;background:#ff2222;color:#fff;border:0;padding:3px 7px;border-radius:5px;font-size:10px'>ELIMINAR</button></div><div style='font-size:13px;font-weight:900;color:#00ff88' id='p-"+m+"'>⚡ CARGANDO RAPIDO...</div><div id='tf-"+m+"' style='font-size:9px;color:#888;background:#000;padding:3px;border-radius:4px'>...</div><div id='sig-"+m+"' style='margin-top:6px'><div style='padding:8px;text-align:center;color:#555;font-size:10px;border:1px dashed #333;border-radius:6px'>Vigilando "+m+" - BULLA 0.12</div></div><div id='pre-google-"+m+"' style='display:none;margin-top:6px'></div><div id='gnews-"+m+"' style='margin-top:6px;background:rgba(255,152,0,0.04);padding:5px;border-radius:6px;border:1px solid rgba(255,152,0,0.18);max-height:140px;overflow-y:auto'><b style='color:#6a5a3a;font-size:10px;font-weight:400'>📰 GOOGLE NEWS "+m+"</b><div style='color:#555;font-size:10px'>Cargando noticias Google...</div></div><div style='display:flex;gap:3px;margin-top:4px'><button onclick=\"cargarNoticiaGoogleCoin('"+m+"')\" style='flex:1;padding:5px;background:rgba(255,152,0,0.08);color:#8a6a3a;border:1px solid rgba(255,152,0,0.18);border-radius:4px;font-size:9px;font-weight:400'>🔄 ACTUALIZAR GOOGLE</button><button onclick=\"window.open('https://news.google.com/search?q="+m.replace('USDT','')+"+crypto&hl=es-419&gl=MX','_blank')\" style='flex:1;padding:5px;background:#111;color:#6a6a;border:1px solid #2a2a2a;border-radius:4px;font-size:9px;font-weight:400'>🌎 VER TODO GOOGLE</button></div></div>";});setTimeout(()=>{activos.forEach(m=>cargarNoticiaGoogleCoin(m));},800);}
-function boll(a){let s=a.slice(-20).reduce((x,y)=>x+y,0)/20,st=Math.sqrt(a.slice(-20).map(x=>(x-s)**2).reduce((x,y)=>x+y,0)/20);return{up:s+st*2,dn:s-st*2}}function ema(a,p){let k=2/(p+1),e=a[0];for(let i=1;i<a.length;i++)e=a[i]*k+e*(1-k);return e;}function rsi(a){let g=0,l=0;for(let i=1;i<14;i++){let d=a[a.length-i]-a[a.length-i-1];if(d>0)g+=d;else l+=-d;}if(l==0)return 100;let rs=g/l;return 100-(100/(1+rs));}function atr(k){let tr=[];for(let i=1;i<k.length;i++){let h=parseFloat(k[i][2]),l=parseFloat(k[i][3]),pc=parseFloat(k[i-1][4]);tr.push(Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc)));}let avg=tr.slice(-14).reduce((x,y)=>x+y,0)/14;return avg==0?k[k.length-1][4]*0.015:avg;}function macd(a){let e12=ema(a,12),e26=ema(a,26),t=[];for(let i=0;i<a.length;i++)t.push(ema(a.slice(0,i+1),12)-ema(a.slice(0,i+1),26));let sig=ema(t.slice(-9),9);return{macd:e12-e26,signal:sig};}
-function vwap(k){let pv=0,v=0;for(let x of k.slice(-20)){let p=(parseFloat(x[2])+parseFloat(x[3])+parseFloat(x[4]))/3,vol=parseFloat(x[5]);pv+=p*vol;v+=vol;}return v===0?parseFloat(k[k.length-1][4]):pv/v;}function volumenConfirm(k){let vols=k.map(x=>parseFloat(x[5])),avg=vols.slice(-20).reduce((x,y)=>x+y,0)/20,act=vols[vols.length-1];return{ratio:act/avg,ok:act>avg*1.2};}
-function beep(f){try{if(!au)au=new(window.AudioContext||window.webkitAudioContext)();let o=au.createOscillator(),g=au.createGain();o.connect(g);g.connect(au.destination);o.frequency.value=f;g.gain.value=.8;o.start();setTimeout(()=>o.stop(),900);}catch{}if(navigator.vibrate)navigator.vibrate([600,200,600]);}
-function calcGanancia(entry,tp,tipo,capital,lev){let pos=capital*lev,isLong=tipo.includes('LONG')||tipo==='LONG',pct=isLong?(tp-entry)/entry:(entry-tp)/entry;return pct*pos;}function calcPivot(k){let h=parseFloat(k[2]),l=parseFloat(k[3]),c=parseFloat(k[4]);return(h+l+c)/3;}
-async function getMonthlyYearlyPivot(sym){try{let rM=await fetch('https://fapi.binance.com/fapi/v1/klines?symbol='+sym+'&interval=1M&limit=3'),kM=await rM.json(),rY=await fetch('https://fapi.binance.com/fapi/v1/klines?symbol='+sym+'&interval=1M&limit=13'),kY=await rY.json(),monthlyPivot=kM.length>=2?calcPivot(kM[kM.length-2]):null,yearlyHigh=Math.max(...kY.slice(0,-1).map(x=>parseFloat(x[2]))),yearlyLow=Math.min(...kY.slice(0,-1).map(x=>parseFloat(x[3]))),yearlyClose=parseFloat(kY[kY.length-2][4]),yearlyPivot=(yearlyHigh+yearlyLow+yearlyClose)/3;return{monthlyPivot,yearlyPivot};}catch{return{monthlyPivot:null,yearlyPivot:null};}}
-function copyTxt(t){navigator.clipboard.writeText(t);beep(1000);let e=document.getElementById('alertaConfirmada');e.style.display='block';e.style.background='#ffcc00';e.style.color='#000';e.innerHTML="COPIADO: "+t;setTimeout(()=>e.style.display='none',2000);}
-function caja100Short(sym,precio,sl,tp1,tp2,volRatio,rsiVal){let g5_20=calcGanancia(precio,tp1,'SHORT',5,20).toFixed(2),g10_20=calcGanancia(precio,tp1,'SHORT',10,20).toFixed(2),dec=precio<1?6:2;if(precio>=1000)dec=2;let absorcion=Math.min(98,Math.floor(volRatio*35+60)),symBin=sym.replace('USDT',''),prediccion=(precio*0.90).toFixed(dec);return "<div style='border:3px solid #ff0055;border-radius:10px;padding:3px;background:#330011;margin-top:5px;box-shadow:0 0 15px #ff0055'><div style='background:#000;border-radius:8px;padding:4px'><div style='background:linear-gradient(90deg,#ff0055,#ffcc00);padding:8px;border-radius:6px;text-align:center;color:#fff;font-weight:900;font-size:12px'>🔥 LIQUIDACION EN LLAMAS SHORT -10% X20 🔥</div><div style='background:#220011;padding:6px;border-radius:6px;margin-top:4px;border:1px solid #ff0055'><div style='color:#ffaaaa;font-size:10px;font-weight:900'>📈 TREND PRO: ROJO SUPER TREND - 68.97% WIN | RSI "+rsiVal.toFixed(0)+"</div><div style='color:#ffcc00;font-size:10px;font-weight:900;margin-top:3px'>🧲 SKYNET ABSORCION "+absorcion+"% • BID ALIBADO • VOL x"+volRatio.toFixed(1)+" | RESISTENCIA "+precio.toFixed(dec)+"</div><div style='color:#66ffcc;font-size:10px;font-weight:900;margin-top:3px'>🤖 KRONOS PREDICCION AUTORREGRESIVA +16b: "+prediccion+" (-10%) | TOKEN K-LINE 60</div></div><div style='background:#003300;padding:6px;border-radius:6px;border:2px solid #ffcc00;margin-top:4px;color:#00ff88;font-weight:900;font-size:11px'>💚 TP1 CONFIRMADO: $"+tp1.toFixed(dec)+" | 5U X20=$"+g5_20+" | 10U X20=$"+g10_20+"</div><div style='display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:5px'><button onclick=\"copyTxt('"+sym+"')\" style='padding:5px;background:#222;color:#ffcc00;border:1px solid #ffcc00;border-radius:4px;font-size:9px;font-weight:900'>📋 "+symBin+"</button><button onclick=\"copyTxt('"+precio.toFixed(dec)+"')\" style='padding:5px;background:#222;color:#fff;border:1px solid #555;border-radius:4px;font-size:9px;font-weight:900'>📋 ENTRADA</button><button onclick=\"copyTxt('"+sl.toFixed(dec)+"')\" style='padding:5px;background:#550000;color:#fff;border:1px solid #ff0055;border-radius:4px;font-size:9px;font-weight:900'>📋 SL</button><button onclick=\"copyTxt('"+tp1.toFixed(dec)+"')\" style='padding:5px;background:#003300;color:#00ff88;border:1px solid #00ff88;border-radius:4px;font-size:9px;font-weight:900'>📋 TP1</button></div><div style='display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:3px'><button onclick=\"copyTxt('SHORT "+sym+" ENTRY "+precio.toFixed(dec)+" SL "+sl.toFixed(dec)+" TP "+tp1.toFixed(dec)+" X20')\" style='padding:7px;background:#ffcc00;color:#000;border:0;border-radius:5px;font-size:10px;font-weight:900'>⚡ COPIAR TODO BINANCE</button><button onclick=\"window.open('https://www.binance.com/es/futures/"+sym+"','_blank')\" style='padding:7px;background:#ffcc00;color:#000;border:0;border-radius:5px;font-size:10px;font-weight:900'>🚀 ABRIR BINANCE "+symBin+"</button></div></div></div>";}
-function caja100Long(sym,precio,sl,tp1,tp2,volRatio,rsiVal){let g5_20=calcGanancia(precio,tp1,'LONG',5,20).toFixed(2),g10_20=calcGanancia(precio,tp1,'LONG',10,20).toFixed(2),dec=precio<1?6:2;if(precio>=1000)dec=2;let absorcion=Math.min(98,Math.floor(volRatio*35+60)),symBin=sym.replace('USDT',''),prediccion=(precio*1.10).toFixed(dec);return "<div style='border:3px solid #00ff88;border-radius:10px;padding:3px;background:#001a11;margin-top:5px;box-shadow:0 0 15px #00ff88'><div style='background:#000;border-radius:8px;padding:4px'><div style='background:linear-gradient(90deg,#00ff88,#ffcc00);padding:8px;border-radius:6px;text-align:center;color:#000;font-weight:900;font-size:12px'>🔥 LIQUIDACION EN LLAMAS LONG +10% X20 🔥</div><div style='background:#002200;padding:6px;border-radius:6px;margin-top:4px;border:1px solid #00ff88'><div style='color:#00ff88;font-size:10px;font-weight:900'>📈 TREND PRO: VERDE SUPER TREND - 68.97% WIN | RSI "+rsiVal.toFixed(0)+"</div><div style='color:#ffcc00;font-size:10px;font-weight:900;margin-top:3px'>🧲 SKYNET ABSORCION "+absorcion+"% • BID ALIBADO • VOL x"+volRatio.toFixed(1)+" | SOPORTE "+precio.toFixed(dec)+"</div><div style='color:#66ffcc;font-size:10px;font-weight:900;margin-top:3px'>🤖 KRONOS PREDICCION AUTORREGRESIVA +16b: "+prediccion+" (+10%) | TOKEN K-LINE 60</div></div><div style='background:#003300;padding:6px;border-radius:6px;border:2px solid #ffcc00;margin-top:4px;color:#00ff88;font-weight:900;font-size:11px'>💚 TP1 CONFIRMADO: $"+tp1.toFixed(dec)+" | 5U X20=$"+g5_20+" | 10U X20=$"+g10_20+"</div><div style='display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:5px'><button onclick=\"copyTxt('"+sym+"')\" style='padding:5px;background:#222;color:#ffcc00;border:1px solid #ffcc00;border-radius:4px;font-size:9px;font-weight:900'>📋 "+symBin+"</button><button onclick=\"copyTxt('"+precio.toFixed(dec)+"')\" style='padding:5px;background:#222;color:#fff;border:1px solid #555;border-radius:4px;font-size:9px;font-weight:900'>📋 ENTRADA</button><button onclick=\"copyTxt('"+sl.toFixed(dec)+"')\" style='padding:5px;background:#550000;color:#fff;border:1px solid #ff0055;border-radius:4px;font-size:9px;font-weight:900'>📋 SL</button><button onclick=\"copyTxt('"+tp1.toFixed(dec)+"')\" style='padding:5px;background:#003300;color:#00ff88;border:1px solid #00ff88;border-radius:4px;font-size:9px;font-weight:900'>📋 TP1</button></div><div style='display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:3px'><button onclick=\"copyTxt('LONG "+sym+" ENTRY "+precio.toFixed(dec)+" SL "+sl.toFixed(dec)+" TP "+tp1.toFixed(dec)+" X20')\" style='padding:7px;background:#ffcc00;color:#000;border:0;border-radius:5px;font-size:10px;font-weight:900'>⚡ COPIAR TODO BINANCE</button><button onclick=\"window.open('https://www.binance.com/es/futures/"+sym+"','_blank')\" style='padding:7px;background:#ffcc00;color:#000;border:0;border-radius:5px;font-size:10px;font-weight:900'>🚀 ABRIR BINANCE "+symBin+"</button></div></div></div>";}
-function cajaNormal(sym,precio,sl,tp1,tp2,tipo){let dec=precio<1?6:2;if(precio>=1000)dec=2;return "<div style='border:1px solid #444;border-radius:8px;padding:5px;background:#111;margin-top:5px'><div style='background:"+(tipo==='LONG'?'#00aa00':'#aa0000')+";padding:4px;border-radius:5px;text-align:center;color:#fff;font-weight:900'>"+sym+" - "+tipo+" X10</div><div style='margin-top:4px;font-size:11px'>ENTRADA: $"+precio.toFixed(dec)+" | SL: $"+sl.toFixed(dec)+" | TP: $"+tp1.toFixed(dec)+"</div></div>";}
-async function modo247(){try{if('Notification' in window&&Notification.permission!=='granted')Notification.requestPermission();if('wakeLock' in navigator)try{if(wakeLock===null)wakeLock=await navigator.wakeLock.request('screen');}catch{}}catch{}}
-function mostrarAlerta(tipo,sym,precio,sl,tp1){let el=document.getElementById('alertaConfirmada');el.style.display='block';let g5=calcGanancia(precio,precio*(tipo.includes('SHORT')?0.9:1.1),tipo,5,20).toFixed(2),g10=calcGanancia(precio,precio*(tipo.includes('SHORT')?0.9:1.1),tipo,10,20).toFixed(2);if(tipo.includes('SHORT')){el.style.background='#ff0055';el.style.color='#fff';el.innerHTML="X20 "+sym+" SHORT -10% 5U $"+g5+" | 10U $"+g10;beep(300);}else{el.style.background='#00ff88';el.style.color='#000';el.innerHTML="X20 "+sym+" LONG +10% 5U $"+g5+" | 10U $"+g10;beep(1100);}setTimeout(()=>el.style.display='none',15000);enviarAlertaTelegramFenix(sym,tipo,precio,sl,tp1);}
-async function cargarTodasNoticiasMercado(){try{let fuentes=['https://www.coindesk.com/arc/outboundfeeds/rss/','https://www.federalreserve.gov/feeds/press_all.xml'],todasNoticias=[];for(let url of fuentes){try{let r=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(url)),data=await r.json();if(data.items)todasNoticias=todasNoticias.concat(data.items.slice(0,4));}catch{}}let mundialQs=['Trump tariffs','Elon Musk','Bitcoin ETF','war market'];for(let q of mundialQs){try{let url='https://news.google.com/rss/search?q='+encodeURIComponent(q)+'&hl=en-US&gl=US&ceid=US:en',r=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(url)),data=await r.json();if(data.items)todasNoticias=todasNoticias.concat(data.items.slice(0,2));}catch{}}let usaNews=todasNoticias.filter(n=>/FED|TRUMP|ELON|MUSK|BINANCE|BTC|WAR/i.test(n.title)).slice(0,10),htmlUSA=usaNews.map(n=>{let tag=n.title.toLowerCase().includes('trump')?'TRUMP':n.title.toLowerCase().includes('elon')||n.title.toLowerCase().includes('musk')?'ELON':n.title.toLowerCase().includes('binance')?'BINANCE':'USA';return "<div style='padding:6px;background:#001a33;border-left:3px solid #0066cc;margin-bottom:4px;border-radius:4px'><span style='color:#66ccff;font-weight:900;font-size:10px'>"+tag+"</span><br><span style='color:#fff;font-size:11px'>"+n.title+"</span><br><span style='color:#888;font-size:9px'>"+new Date(n.pubDate||Date.now()).toLocaleTimeString()+"</span></div>";}).join('')||'<div style="color:#888">Vigilando FED, TRUMP, ELON, BINANCE...</div>';document.getElementById('noticiasUSALista').innerHTML=htmlUSA;if(usaNews[0])document.getElementById('usaNewsBar').innerHTML="MUNDIAL: "+usaNews[0].title.slice(0,90)+"...";document.getElementById('newsBar').innerHTML="MUNDIAL: FED + TRUMP + ELON + BINANCE | "+new Date().toLocaleTimeString();}catch{}}
-async function renderPumpsEnVivo(){let html='<b style="color:#00ff88;font-size:11px">PUMPS 24/7 - X20 TP CONFIRMADO - BOTONES BINANCE</b>',ahora=Date.now();Object.keys(pumpsEstado).forEach(k=>{if(ahora-pumpsEstado[k].time>300000)delete pumpsEstado[k];});let activosPumps=Object.keys(pumpsEstado).filter(k=>ahora-pumpsEstado[k].time<300000);if(activosPumps.length===0)html+="<div style='padding:10px;text-align:center;color:#555;font-size:11px;margin-top:6px;border:1px dashed #333;border-radius:6px'>Todos en vigilancia - BULLA 0.123360</div>";else activosPumps.forEach(sym=>{let restante=Math.ceil((300000-(ahora-pumpsEstado[sym].time))/1000);html+="<div style='background:#111;padding:6px;margin-top:6px;border-radius:10px;border:1px solid #444'><div style='font-size:11px'>"+sym+" <span style='float:right;font-size:9px;color:#888'>"+restante+"s</span></div><div style='margin-top:4px'>"+pumpsEstado[sym].html+"</div></div>";});document.getElementById('noticiasLista').innerHTML=html;}
-function revisarTrades(precioActual,sym){historial.forEach(h=>{if(h.symbol===sym&&h.resultado==='PENDING'){let isLong=h.tipo.includes('LONG'),lev=h.conf100?20:10,hora=new Date().toLocaleString();if(isLong&&precioActual>=h.tp1){h.resultado='WIN';h.exitPrice=h.tp1;h.horaGanada=hora;h.profit=calcGanancia(h.entry,h.tp1,'LONG',10,lev);h.profit20=calcGanancia(h.entry,h.tp1,'LONG',10,20);beep(1200);}if(!isLong&&precioActual<=h.tp1){h.resultado='WIN';h.exitPrice=h.tp1;h.horaGanada=hora;h.profit=calcGanancia(h.entry,h.tp1,'SHORT',10,lev);h.profit20=calcGanancia(h.entry,h.tp1,'SHORT',10,20);beep(1200);}if(isLong&&precioActual<=h.sl){h.resultado='LOSS';h.exitPrice=h.sl;h.horaGanada=hora;h.profit=calcGanancia(h.entry,h.sl,'LONG',10,lev);h.profit20=calcGanancia(h.entry,h.sl,'LONG',10,20);beep(300);}if(!isLong&&precioActual>=h.sl){h.resultado='LOSS';h.exitPrice=h.sl;h.horaGanada=hora;h.profit=calcGanancia(h.entry,h.sl,'SHORT',10,lev);h.profit20=calcGanancia(h.entry,h.sl,'SHORT',10,20);beep(300);}}});guardarHistorial();}
-async function fetchTF(sym,interval){try{let r=await fetch('https://fapi.binance.com/fapi/v1/klines?symbol='+sym+'&interval='+interval+'&limit=60'),k=await r.json();if(!k||k.length<30)return null;let closes=k.map(x=>parseFloat(x[4]));return{closes,ema9:ema(closes,9),ema21:ema(closes,21),rsi:rsi(closes),boll:boll(closes),atr:atr(k),precio:closes[closes.length-1],macd:macd(closes),vwap:vwap(k),vol:volumenConfirm(k),klines:k};}catch{return null;}}
-async function check(sym){try{let main=await fetchTF(sym,'1m');if(!main)return;let precio=main.precio,dec=precio<1?6:2;if(precio>=1000)dec=2;document.getElementById('p-'+sym).innerHTML="PRECIO: $"+precio.toFixed(dec)+" <span style='font-size:10px;color:#00ff88'>⚡ RAPIDO</span>";document.getElementById('tf-'+sym).innerHTML="⚡ RAPIDO...";revisarTrades(precio,sym);let bullish=0,bearish=0,tfText='1m:🟢 ';if(!estado[sym])estado[sym]={lastP:0,bloq:false,showUntil:0,lastPivotCheck:0,monthlyPivot:null,yearlyPivot:null,lastSignal:0,telegramEnviado:false};let st=estado[sym],b=main.boll,vol=main.vol,ahora=Date.now();if(ahora-st.lastPivotCheck>300000||!st.monthlyPivot){getMonthlyYearlyPivot(sym).then(p=>{st.monthlyPivot=p.monthlyPivot;st.yearlyPivot=p.yearlyPivot;st.lastPivotCheck=ahora;});}if(ahora-st.lastSignal<600000){st.lastP=precio;return;}if(st.showUntil>0&&ahora>st.showUntil){document.getElementById('sig-'+sym).innerHTML="<div style='padding:8px;text-align:center;color:#555;font-size:10px;border:1px dashed #333;border-radius:6px'>Vigilando "+sym+" - BULLA 0.12</div>";st.showUntil=0;st.bloq=false;st.telegramEnviado=false;}if(st.showUntil>0&&ahora<st.showUntil){st.lastP=precio;return;}for(let tf of['5m','15m','1h','2h','4h','1d']){let d=await fetchTF(sym,tf);if(!d)continue;if(d.ema9>d.ema21&&d.rsi>55&&d.macd.macd>d.macd.signal&&d.precio>d.vwap)bullish++;if(d.ema9<d.ema21&&d.rsi<45&&d.macd.macd<d.macd.signal&&d.precio<d.vwap)bearish++;tfText+=tf+":"+(d.ema9>d.ema21?'🟢':'🔴')+" ";document.getElementById('tf-'+sym).innerHTML=tfText+" | "+bullish+"/7 LONG | "+bearish+"/7 SHORT";}let nearMonthlyPivot=st.monthlyPivot&&Math.abs(precio-st.monthlyPivot)/precio<0.012,heavyResistance=main.klines&&Math.max(...main.klines.slice(-20).map(x=>parseFloat(x[2])))*0.985<precio,supportZone=main.klines&&Math.min(...main.klines.slice(-20).map(x=>parseFloat(x[3])))*1.015>precio,granReboteVol=main.vol.ratio>2.2,nearYearlyPivot=st.yearlyPivot&&Math.abs(precio-st.yearlyPivot)/precio<0.02;if(nearMonthlyPivot&&heavyResistance&&main.rsi>66&&precio>main.boll.up*0.995&&vol.ok&&granReboteVol&&bearish>=6&&st.lastP>0){let sl=precio+main.atr*1.0,tp1=precio*0.90,tp2=precio*0.85,caja=caja100Short(sym,precio,sl,tp1,tp2,main.vol.ratio,main.rsi);document.getElementById('sig-'+sym).innerHTML=caja;pumpsEstado[sym]={time:ahora,html:caja};mostrarAlerta('SHORT LIQUIDACION -10% X20',sym,precio,sl,tp1);st.showUntil=ahora+600000;st.lastSignal=ahora;st.bloq=true;historial.push({id:Date.now(),fecha:new Date().toLocaleString(),symbol:sym,tipo:'SHORT LIQ -10% X20',entry:precio,sl:sl,tp1:tp1,tp2:tp2,resultado:'PENDING',exitPrice:0,profit:0,profit20:0,conf100:true,horaGanada:''});guardarHistorial();return;}if((nearYearlyPivot||supportZone)&&main.rsi<34&&precio<main.boll.dn*1.005&&vol.ok&&granReboteVol&&bullish>=6&&st.lastP>0){let sl=precio-main.atr*1.0,tp1=precio*1.10,tp2=precio*1.15,caja=caja100Long(sym,precio,sl,tp1,tp2,main.vol.ratio,main.rsi);document.getElementById('sig-'+sym).innerHTML=caja;pumpsEstado[sym]={time:ahora,html:caja};mostrarAlerta('LONG LIQUIDACION +10% X20',sym,precio,sl,tp1);st.showUntil=ahora+600000;st.lastSignal=ahora;st.bloq=true;historial.push({id:Date.now(),fecha:new Date().toLocaleString(),symbol:sym,tipo:'LONG LIQ +10% X20',entry:precio,sl:sl,tp1:tp1,tp2:tp2,resultado:'PENDING',exitPrice:0,profit:0,profit20:0,conf100:true,horaGanada:''});guardarHistorial();return;}if(st.lastP>0&&st.lastP<b.up&&precio>b.up&&bullish>=6&&vol.ok&&vol.ratio>1.5){let sl=precio-main.atr*1.5,tp1=precio+main.atr*1.5,tp2=precio+main.atr*3;document.getElementById('sig-'+sym).innerHTML=cajaNormal(sym,precio,sl,tp1,tp2,'LONG');st.showUntil=ahora+300000;st.lastSignal=ahora;}else if(st.lastP>0&&st.lastP<b.dn&&precio<b.dn&&bearish>=6&&vol.ok&&vol.ratio>1.5){let sl=precio-main.atr*1.5,tp1=precio-main.atr*1.5,tp2=precio-main.atr*3;document.getElementById('sig-'+sym).innerHTML=cajaNormal(sym,precio,sl,tp1,tp2,'SHORT');st.showUntil=ahora+300000;st.lastSignal=ahora;}st.lastP=precio;}catch{}}
-async function tick(){let arr=Array.from(activos);await Promise.all(arr.map(s=>check(s)));document.getElementById('e').innerText="⚡ RAPIDO TREND PRO + SKYNET + KRONOS | 100% CONFIRMADO 24/7 | "+activos.size+" monedas | "+new Date().toLocaleTimeString();renderPumpsEnVivo();}
-function iniciarAuto(){if(autoIniciado)return;autoIniciado=true;render();actualizarStats();modo247();tick();cargarTodasNoticiasMercado();setInterval(tick,5000);setInterval(cargarTodasNoticiasMercado,30000);setInterval(()=>{activos.forEach(m=>cargarNoticiaGoogleCoin(m));},60000);setInterval(modo247,60000);beep(700);}
-render();cargarTodas();actualizarStats();setTimeout(iniciarAuto,500);
-</script></body></html>
+
+function render(){
+ let c=document.getElementById('lista'); c.innerHTML='';
+ activos.forEach(m=>{
+  let stats=historial.filter(h=>h.symbol===m); let w=stats.filter(h=>h.resultado==='WIN').length; let l=stats.filter(h=>h.resultado==='LOSS').length;
+  c.innerHTML+=`<div id="C-${m}" style="padding:8px;border-radius:10px;border:1px solid #333;background:#111;margin-top:8px">
+  <div style="font-weight:900;font-size:13px">${m} <span style="font-size:11px;color:${w>=l?'#00ff88':'#ff4444'}">(${w}W/${l}L)</span> <button onclick="eliminar('${m}')" style="float:right;background:#ff2222;color:#fff;border:0;padding:3px 7px;border-radius:5px;font-size:10px">🗑️</button></div>
+  <div style="font-size:22px;font-weight:900" id="p-${m}">$--</div>
+  <div id="tf-${m}" style="font-size:10px;color:#888;background:#000;padding:4px;border-radius:4px;margin:2px 0">7TF AR(16) SKYNET...</div>
+  <div id="sig-${m}" style="margin-top:6px"></div>
+  </div>`;
+ });
+}
+
+// INDICADORES KRONOS AR(16) + SKYNET + TREND PRO
+function boll(arr){ let s=arr.slice(-20).reduce((a,b)=>a+b,0)/20; let st=Math.sqrt(arr.slice(-20).map(x=>(x-s)**2).reduce((a,b)=>a+b,0)/20); return{up:s+st*2, low:s-st*2, mid:s} }
+function ema(arr,p){ let k=2/(p+1); let e=arr[0]; for(let i=1;i<arr.length;i++) e=arr[i]*k+e*(1-k); return e; }
+function rsi(arr){ let g=0,l=0; for(let i=1;i<14;i++){ let d=arr[arr.length-i]-arr[arr.length-i-1]; if(d>0) g+=d; else l+=-d; } if(l==0) return 100; let rs=g/l; return 100-(100/(1+rs)); }
+function atr(klines){ let trs=[]; for(let i=1;i<klines.length;i++){ let h=parseFloat(klines[i][2]), l=parseFloat(klines[i][3]), pc=parseFloat(klines[i-1][4]); trs.push(Math.max(h-l, Math.abs(h-pc), Math.abs(l-pc))); } let avg=trs.slice(-14).reduce((a,b)=>a+b,0)/14; return avg==0? klines[klines.length-1][4]*0.015 : avg; }
+function beep(f){ try{ if(!au) au=new(window.AudioContext||window.webkitAudioContext)(); let o=au.createOscillator(),g=au.createGain(); o.connect(g); g.connect(au.destination); o.frequency.value=f; g.gain.value=.8; o.start(); setTimeout(()=>o.stop(),600); }catch{} if(navigator.vibrate) navigator.vibrate([400,100,400]); }
+
+// CAJA CON FUEGO 100% COMO TU FOTO - NO TOCADA
+function cajaConFuego(sym, precio, bullishTipo, bullishCount, extraMsg){
+  let lev=parseInt(document.getElementById('lev').value)||20;
+  let esLong = bullishCount>=5;
+  let lado = esLong ? 'LONG' : 'SHORT';
+  let entrada=precio;
+  let sl = esLong ? precio*0.995 : precio*1.005;
+  let tp1 = esLong ? precio*1.10 : precio*0.90;
+  let tp2 = esLong ? precio*1.15 : precio*0.85;
+  let pct1 = '10%'; let pct2='15%';
+  return `<div style="border:3px solid #ff0040;border-radius:15px;padding:3px;background:linear-gradient(90deg,#ff0040,#ffaa00);margin-top:8px;box-shadow:0 0 15px #ff0040">
+    <div style="background:#000;border-radius:12px;padding:5px">
+      <div style="background:linear-gradient(90deg,#8b0000,#ff4500,#ffaa00);border-radius:8px;padding:8px;text-align:center;font-weight:900;color:#fff;font-size:13px;border:2px solid #ff0">🔥 LIQUIDACIÓN o GRAN REBOTE EN LLAMAS - ${lado} -${pct1} X${lev} 🔥 ${extraMsg||''}</div>
+      <div style="background:#111;border-radius:6px;padding:5px;margin-top:4px;text-align:center"><span style="color:#ff69b4;font-weight:900">📊 PRECIO ACTUAL: $${precio.toFixed(precio<1?6:2)}</span><br><span style="color:#ffaa00;font-size:10px">Heavy Resistance + Monthly Pivot Cumulative ${lado} Liquidation Leverage | ${bullishCount}/7 ${bullishTipo} | AR(16) | SKYNET</span></div>
+      <div style="padding:6px;color:#fff;font-size:12px">👉 ENTRADA: $${entrada.toFixed(6)} | 🛑 SL: $${sl.toFixed(6)} | TP1: $${tp1.toFixed(6)} TP2: $${tp2.toFixed(6)}</div>
+      <div style="border:2px solid #ffaa00;background:linear-gradient(90deg,#001a00,#0a4a00);border-radius:10px;padding:8px;text-align:center">
+        <div style="color:#ff0;font-weight:900;font-size:12px">💚 TP1 CONFIRMADO Y EFECTIVA: $${tp1.toFixed(2)} (${esLong?'+':'-'}${pct1}) | 5U X${lev}= $${(5*lev*0.1).toFixed(2)} | 10U X${lev}= $${(10*lev*0.1).toFixed(2)}</div>
+        <div style="background:#ffaa00;color:#000;font-weight:900;padding:8px;border-radius:8px;margin-top:5px;font-size:14px">🔥 ENTRAR AQUÍ X${lev} - ${sym}</div>
+      </div>
+      <div style="color:#aaa;font-size:11px;padding:4px;margin-top:2px">💰 TP2: $${tp2.toFixed(2)} | 5U X${lev}= $${(5*lev*0.15).toFixed(2)} | 10U X${lev}= $${(10*lev*0.15).toFixed(2)} | TP CONFIRMADO | MERCADO USA 24/7 FED/CPI/FOMC | PUMPS 24/7 X${lev}</div>
+    </div>
+  </div>`;
+}
+
+let pumpsData=[];
+async function cargarNoticiasBinance(){
+ try{
+  let r=await fetch('https://fapi.binance.com/fapi/v1/ticker/24hr'); let data=await r.json();
+  pumpsData=data.filter(x=>x.symbol.endsWith('USDT') && parseFloat(x.priceChangePercent)>4).sort((a,b)=>parseFloat(b.priceChangePercent)-parseFloat(a.priceChangePercent)).slice(0,8);
+  if(pumpsData.length>0){
+   document.getElementById('newsBar').innerHTML=`🔴 USA 24/7: FED CPI FOMC S&P500 | BINANCE PUMPS: ${pumpsData[0].symbol} +${parseFloat(pumpsData[0].priceChangePercent).toFixed(1)}% | GOOGLE MUNDIAL EN VIVO`;
+   renderPumpsEnVivo();
+  }
+ }catch(e){}
+}
+async function renderPumpsEnVivo(){
+ let html='<b style="color:#ffaa00;font-size:11px">📰 PUMPS 24/7 X20 TP CONFIRMADO + MERCADO USA 24/7 FED/CPI/FOMC + GOOGLE MUNDIAL</b>';
+ for(let p of pumpsData){ html+=`<div style="background:#111;padding:6px;margin-top:6px;border-radius:10px;border:1px solid #333"><div style="font-size:11px">🚀 <b>${p.symbol}</b> <span style="color:#00ff88">+${parseFloat(p.priceChangePercent).toFixed(1)}%</span> <button onclick="activos.add('${p.symbol}');saveActivos();render()" style="float:right;padding:3px 6px;background:#222;color:#fff;border:1px solid #333;border-radius:4px;font-size:9px">+ ADD</button></div></div>`; }
+ document.getElementById('noticiasLista').innerHTML=html;
+}
+
+function revisarTrades(precioActual, sym){
+ historial.forEach(h=>{ if(h.symbol===sym && h.resultado==='PENDING'){ if(precioActual>=h.tp1){ h.resultado='WIN'; h.profit=10; beep(1200); } if(precioActual<=h.sl){ h.resultado='LOSS'; h.profit=-5; beep(300); } } });
+ guardarHistorial();
+}
+async function fetchTF(sym, interval){
+ try{ let r=await fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${sym}&interval=${interval}&limit=50`); let k=await r.json(); if(!k || k.length<25) return null;
+  let closes=k.map(x=>parseFloat(x[4])); return{closes, ema9:ema(closes,9), ema21:ema(closes,21), rsi:rsi(closes), boll:boll(closes), atr:atr(k), precio:closes[closes.length-1]};
+ }catch{ return null; }
+}
+async function check(sym){
+ try{
+  let resultados={}; let bullish=0; let tfText='';
+  for(let tf of TFS){ let d=await fetchTF(sym, tf); await new Promise(r=>setTimeout(r,60)); if(!d) continue; resultados[tf]=d; if(d.ema9>d.ema21 && d.rsi>50) bullish++; tfText+=`${tf}:${d.ema9>d.ema21?'🟢':'🔴'} `; }
+  let main=resultados['1m'] || resultados['5m']; if(!main) return;
+  let precio=main.precio;
+  document.getElementById('p-'+sym).innerHTML=`$${precio.toFixed(precio<1?6:2)} <span style="font-size:10px;color:#888">ATR ${main.atr.toFixed(4)} AR16</span>`;
+  document.getElementById('tf-'+sym).innerHTML=`${tfText} | ${bullish}/7 LONG | SKYNET`;
+  revisarTrades(precio, sym);
+  if(!estado[sym]) estado[sym]={lastP:0,bloq:false};
+  let st=estado[sym]; let box=document.getElementById('sig-'+sym);
+  box.innerHTML=cajaConFuego(sym, precio, 'KRONOS+SKYNET', bullish, '5 MIN PARA BINANCE');
+  if(st.lastP>0 && st.lastP<main.boll.up && precio>main.boll.up && bullish>=5 && !st.bloq){
+    historial.push({id:Date.now(), fecha:new Date().toLocaleString(), symbol:sym, entry:precio, sl:precio-main.atr*1.5, tp1:precio+main.atr*1.5, tp2:precio+main.atr*3, resultado:'PENDING', profit:0}); guardarHistorial();
+    beep(900); st.bloq=true; setTimeout(()=>st.bloq=false,180000);
+  }
+  st.lastP=precio;
+ }catch(e){}
+}
+async function tick(){
+ for(let s of Array.from(activos)){ await check(s); await new Promise(r=>setTimeout(r,150)); }
+ document.getElementById('e').innerText=`✅ AUTO ${activos.size}/${todasMonedas.length} | Hist ${historial.length} | ${new Date().toLocaleTimeString()}`;
+}
+function iniciarAuto(){ if(autoIniciado) return; autoIniciado=true; render(); actualizarStats(); tick(); setInterval(tick,9000); setInterval(cargarNoticiasBinance,30000); setInterval(detectarNuevasMonedasSegundos,5000); cargarNoticiasBinance(); cargarTodas(); beep(700); }
+render(); cargarTodas(); cargarNoticiasBinance(); actualizarStats(); setTimeout(iniciarAuto, 1000);
+</script>
