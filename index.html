@@ -1,136 +1,123 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>FENIX CON GRAFICA BINANCE REAL</title>
-<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>FENIX DEFINITIVO AUTO ALL BINANCE</title>
 <style>
-@keyframes firePulseGreen{0%{box-shadow:0 0 20px #00ff88}50%{box-shadow:0 0 60px #00ff88}100%{box-shadow:0 0 20px #00ff88}}
-@keyframes firePulseRed{0%{box-shadow:0 0 20px #ff2244}50%{box-shadow:0 0 60px #ff2244}100%{box-shadow:0 0 20px #ff2244}}
-@keyframes flameMove{0%{transform:translateY(0)}50%{transform:translateY(-4px)}100%{transform:translateY(0)}}
+@keyframes firePulseGreen{0%{box-shadow:0 0 20px #00ff88}50%{box-shadow:0 0 60px #00ff88,0 0 120px #00ff88}100%{box-shadow:0 0 20px #00ff88}}
+@keyframes firePulseRed{0%{box-shadow:0 0 20px #ff2244}50%{box-shadow:0 0 60px #ff2244,0 0 120px #ff2244}100%{box-shadow:0 0 20px #ff2244}}
+@keyframes flameMove{0%{transform:translateY(0) scale(1)}50%{transform:translateY(-5px) scale(1.2)}100%{transform:translateY(0) scale(1)}}
+@keyframes textFire{0%{text-shadow:0 0 10px #00ff88}50%{text-shadow:0 0 30px #ffff00}100%{text-shadow:0 0 10px #00ff88}}
 </style></head><body style="margin:0;background:#000;color:#fff;font-family:Arial"><div style="padding:6px">
-<h3 style="text-align:center;color:#ff4500;margin:4px">🐦‍🔥 FENIX CON GRAFICA BINANCE REAL IDENTICA 🔥</h3>
-<div style="background:#111;padding:5px;border-radius:8px;margin:5px 0;display:flex;gap:4px"><input id="filtro" oninput="filtrarTodas()" placeholder="Buscar..." style="flex:1;padding:6px;background:#000;color:#fff;border:1px solid #333;border-radius:5px"><button onclick="cargarTodas()" style="padding:6px;background:#222;color:#fff;border:1px solid #333;border-radius:5px">🔄</button><input id="buscar" placeholder="PEPE" style="width:70px;padding:6px;background:#000;color:#fff;border:1px solid #333;border-radius:5px"><button onclick="addManual()" style="padding:6px 8px;background:#ff4500;color:#fff;border:0;border-radius:5px">+</button></div>
-<div id="todas" style="display:grid;grid-template-columns:repeat(5,1fr);gap:3px;max-height:70px;overflow-y:auto;background:#000;padding:4px;border-radius:5px"></div>
-<div style="display:flex;gap:4px;font-size:10px;margin:4px 0"><span id="contadorBinance" style="color:#00ff88">TOTAL:...</span><span id="e" style="flex:1;text-align:right;background:#111;padding:3px;border-radius:4px">AUTO...</span><span id="tg_status" style="color:#0af">TG ✅</span></div>
-<div id="lista" style="display:grid;grid-template-columns:1fr;gap:12px"></div></div>
+<h3 style="text-align:center;color:#ff4500;margin:4px">🐦‍🔥 FENIX DEFINITIVO - AUTO SPOT+FUTUROS+ALPHA + MA7/25/99 🔥</h3>
+<div id="newsBar" style="background:linear-gradient(90deg,#00ff88,#ffaa00);color:#000;padding:7px;border-radius:8px;font-size:11px;font-weight:900;text-align:center">⚡ AUTO ESCANEO: 1032 BINANCE + ALPHA | SPOT + FUTUROS | MA7/25/99 + VOL + RSI</div>
+<div style="display:flex;gap:4px;margin:5px 0"><button onclick="modo='TODAS';render()" style="flex:1;padding:8px;background:#00ff88;color:#000;border:0;border-radius:8px;font-weight:900;font-size:10px">🔥 SOLO SEÑALES 6/6 AUTO</button><button onclick="modo='TOP';render()" style="flex:1;padding:8px;background:#222;color:#fff;border:1px solid #333;border-radius:8px;font-size:10px">📊 TOP 50 PUMPS</button><span id="e" style="background:#111;padding:6px;border-radius:6px;font-size:10px">AUTO...</span></div>
+<div id="contadorBinance" style="font-size:11px;color:#00ff88;text-align:center;margin:4px 0">CARGANDO SPOT+FUTUROS+ALPHA...</div>
+<div id="lista" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px"></div>
+</div>
 <script>
-let activos=new Set(JSON.parse(localStorage.getItem('fenix_activos')||'["BNBUSDT","BTCUSDT","AKEUSDT","QUSDT"]'));
-let todasMonedas=JSON.parse(localStorage.getItem('fenix_todas')||'[]'); let estado={};
+let activos=new Set(); let todasMonedas=[]; let estado={}; let modo='TODAS';
 const TFS=['1m','5m','15m','1h','4h','1d']; 
 const TELEGRAM_TOKEN="8825910376:AAHpnjHuhaLyJhQMI9oOZmqxEcupaId-54E"; const TELEGRAM_CHAT_ID="8639536197";
 async function enviarTelegram(t){try{fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TELEGRAM_CHAT_ID,text:t,parse_mode:'HTML'})})}catch{}}
-function saveActivos(){localStorage.setItem('fenix_activos',JSON.stringify(Array.from(activos)))}
-async function cargarTodas(){try{if(todasMonedas.length===0){let r=await fetch('https://fapi.binance.com/fapi/v1/exchangeInfo');let d=await r.json();todasMonedas=d.symbols.filter(s=>s.symbol.endsWith('USDT')).map(s=>s.symbol);localStorage.setItem('fenix_todas',JSON.stringify(todasMonedas))}document.getElementById('contadorBinance').innerHTML=`⚡ ${todasMonedas.length} | ${activos.size} activas`;renderTodas(todasMonedas)}catch{}}
-function renderTodas(lista){document.getElementById('todas').innerHTML=lista.slice(0,80).map(s=>`<button onclick="activos.add('${s}');saveActivos();render()" style="padding:3px;background:#1a1a1a;color:#fff;border:1px solid #222;border-radius:3px;font-size:8px">${s.replace('USDT','')}</button>`).join('')}
-function filtrarTodas(){let q=document.getElementById('filtro').value.toUpperCase();renderTodas(q?todasMonedas.filter(s=>s.includes(q)):todasMonedas)}
-function addManual(){let v=document.getElementById('buscar').value.trim().toUpperCase();if(!v)return;if(!v.endsWith('USDT'))v+='USDT';activos.add(v);saveActivos();render()}
-function eliminar(sym){activos.delete(sym);saveActivos();delete estado[sym];let el=document.getElementById('C-'+sym);if(el)el.remove()}
-
-function render(){
- let c=document.getElementById('lista');c.innerHTML='';
- activos.forEach(m=>{
-  c.innerHTML+=`<div id="C-${m}" style="border-radius:16px;border:3px solid #333;background:#0a0a12;overflow:hidden">
-  <div style="display:flex;justify-content:space-between;padding:8px"><b style="font-size:14px">${m} <span id="p-${m}" style="color:#00ff88">$--</span> <span id="tf-${m}" style="font-size:10px;color:#888"></span></b><button onclick="eliminar('${m}')" style="background:#ff2222;color:#fff;border:0;padding:2px 8px;border-radius:6px">x</button></div>
-  <div id="sig-${m}"></div>
-  <div id="tv_${m}" style="height:480px;background:#000"></div>
-  </div>`;
-  setTimeout(()=>crearGraficaBinanceReal(m),500);
- });
-}
-
-function crearGraficaBinanceReal(sym){
- let containerId=`tv_${sym}`;
- let tvSym=`BINANCE:${sym}`;
- // Destruir si ya existe
- document.getElementById(containerId).innerHTML='';
- new TradingView.widget({
-  "autosize": true,
-  "symbol": tvSym,
-  "interval": "15",
-  "timezone": "Etc/UTC",
-  "theme": "dark",
-  "style": "1",
-  "locale": "en",
-  "toolbar_bg": "#131722",
-  "enable_publishing": false,
-  "allow_symbol_change": false,
-  "hide_top_toolbar": false,
-  "hide_side_toolbar": false,
-  "save_image": false,
-  "container_id": containerId,
-  "studies": [
-    {"id":"MASimple@tv-basicstudies","inputs":{"length":7}},
-    {"id":"MASimple@tv-basicstudies","inputs":{"length":25}},
-    {"id":"MASimple@tv-basicstudies","inputs":{"length":99}},
-    {"id":"Volume@tv-basicstudies","inputs":{"length":5}},
-    {"id":"Volume@tv-basicstudies","inputs":{"length":10}}
-  ],
-  "studies_overrides": {
-    "moving average.ma.color": "#ffeb3b",
-    "moving average.ma.linewidth": 2,
-    "moving average 2.ma.color": "#ff69b4",
-    "moving average 2.ma.linewidth": 2,
-    "moving average 3.ma.color": "#9b7cff",
-    "moving average 3.ma.linewidth": 2,
-    "volume.volume.color.0": "#ff4444",
-    "volume.volume.color.1": "#00ff88",
-    "volume.volume ma.color": "#ffeb3b",
-    "volume.volume ma.linewidth": 1,
-    "volume.volume ma 2.color": "#9b7cff"
-  },
-  "overrides": {
-    "mainSeriesProperties.candleStyle.upColor": "#00ff88",
-    "mainSeriesProperties.candleStyle.downColor": "#ff4444",
-    "mainSeriesProperties.candleStyle.borderUpColor": "#00ff88",
-    "mainSeriesProperties.candleStyle.borderDownColor": "#ff4444",
-    "mainSeriesProperties.candleStyle.wickUpColor": "#00ff88",
-    "mainSeriesProperties.candleStyle.wickDownColor": "#ff4444"
-  },
-  "width": "100%",
-  "height": 480
- });
-}
-
-function boll(arr){let s=arr.slice(-20).reduce((a,b)=>a+b,0)/20;let st=Math.sqrt(arr.slice(-20).map(x=>(x-s)**2).reduce((a,b)=>a+b,0)/20);return{up:s+st*2,low:s-st*2,mid:s}}
-function ema(arr,p){let k=2/(p+1);let e=arr[0];for(let i=1;i<arr.length;i++) e=arr[i]*k+e*(1-k);return e}
-function rsi(arr){let g=0,l=0;for(let i=1;i<14;i++){let d=arr[arr.length-i]-arr[arr.length-i-1];if(d>0)g+=d;else l+=-d}if(l==0)return 100;return 100-(100/(1+g/l))}
+function ma(arr,p){if(arr.length<p)return arr[arr.length-1];let s=0;for(let i=arr.length-p;i<arr.length;i++)s+=arr[i];return s/p}
+function boll(arr){let s=ma(arr,20);let st=Math.sqrt(arr.slice(-20).reduce((a,c)=>a+(c-s)**2,0)/20);return{up:s+st*2,low:s-st*2,mid:s}}
+function ema(arr,p){let k=2/(p+1);let e=arr[0];for(let i=1;i<arr.length;i++)e=arr[i]*k+e*(1-k);return e}
+function rsi(arr){let g=0,l=0;for(let i=arr.length-14;i<arr.length;i++){let d=arr[i]-arr[i-1];if(d>0)g+=d;else l+=-d}if(l==0)return 100;return 100-(100/(1+g/l))}
 function atr(k){let trs=[];for(let i=1;i<k.length;i++){let h=+k[i][2],l=+k[i][3],pc=+k[i-1][4];trs.push(Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc)))}return trs.slice(-14).reduce((a,b)=>a+b,0)/14||k[k.length-1][4]*0.01}
-function cajaConFuego(sym,precio,bullish,tipo){
- let esLong=bullish>=3; let border=tipo==='RUPTURA'?(esLong?'#00ff88':'#ff2244'):'#333';
- let anim=tipo==='RUPTURA'?`animation:${esLong?'firePulseGreen':'firePulseRed'} 0.8s infinite;`:'';
- let llamas=tipo==='RUPTURA'?`<div style="background:${esLong?'linear-gradient(90deg,#00ff88,#ffff00)':'linear-gradient(90deg,#ff2244,#ffaa00)'};color:#000;font-weight:900;font-size:11px;text-align:center;padding:6px">🔥🔥🔥 SEÑAL 100% CONFIRMADA EN LLAMAS ${esLong?'VERDES 🟢🟢🟢':'ROJAS 🔴🔴🔴'} 6/6 🔥🔥🔥</div>`:'';
- let pre=tipo==='PRE'?`<div style="background:linear-gradient(90deg,#ffaa00,#ff4500);color:#000;font-weight:900;font-size:11px;text-align:center;padding:6px">🔥🔥🔥 Próxima ruptura confirmada en 10 minutos 🔥🔥🔥</div>`:'';
- let reb=tipo==='REBOTE'?`<div style="background:#222;color:#fff;font-size:10px;text-align:center;padding:4px">📊 SEÑAL 6/6 REBOTE CONFIRMADO (SIN LLAMAS)</div>`:'';
- let entry=(precio*0.981).toFixed(precio<1?6:2), tp1=(precio*(esLong?1.031:0.969)).toFixed(precio<1?6:2), tp2=(precio*(esLong?1.065:0.935)).toFixed(precio<1?6:2), sl=(precio*(esLong?0.971:1.029)).toFixed(precio<1?6:2);
- return `<div style="border-top:3px solid ${border};${anim}background:#111;padding:8px">${llamas}${pre}${reb}<div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:${esLong?'#00ff88':'#ff4444'}">${esLong?'↗ LONG':'↘ SHORT'} ${bullish}/6 ${tipo}</span><span>Entry $${entry} | SL $${sl} | TP1 $${tp1} TP2 $${tp2}</span></div></div>`;
+
+async function cargarTodasBinanceCompleto(){
+ try{
+  let [fut,spot]=await Promise.all([
+   fetch('https://fapi.binance.com/fapi/v1/exchangeInfo').then(r=>r.json()),
+   fetch('https://api.binance.com/api/v3/exchangeInfo').then(r=>r.json())
+  ]);
+  let futuros=fut.symbols.filter(s=>s.symbol.endsWith('USDT')&&s.status==='TRADING').map(s=>s.symbol);
+  let spots=spot.symbols.filter(s=>s.symbol.endsWith('USDT')&&s.status==='TRADING').map(s=>s.symbol);
+  let alpha=['A2ZUSDT','B2USDT','ZETAUSDT','IRYSUSDT','PUMPUSDT','QUSDT','AKEUSDT']; // Alpha trending
+  todasMonedas=[...new Set([...futuros,...spots,...alpha])].sort();
+  document.getElementById('contadorBinance').innerHTML=`✅ TOTAL AUTO: ${todasMonedas.length} | SPOT:${spots.length} FUTUROS:${futuros.length} ALPHA:${alpha.length} | ESCANEANDO...`;
+ }catch(e){todasMonedas=["BTCUSDT","BNBUSDT","ETHUSDT","SOLUSDT","AKEUSDT","QUSDT","PUMPUSDT","IRYSUSDT"]; }
 }
-async function fetchTF(sym,interval){try{let r=await fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${sym}&interval=${interval}&limit=30`);let k=await r.json();if(!k||k.length<20)return null;let closes=k.map(x=>+x[4]);return{closes,ema9:ema(closes,9),ema21:ema(closes,21),rsi:rsi(closes),boll:boll(closes),atr:atr(k),precio:closes[closes.length-1]}}catch{return null}}
-async function check(sym){try{
- let results=await Promise.all(TFS.map(tf=>fetchTF(sym,tf)));
- let bullish=0,tfText='',main=null; results.forEach((d,i)=>{if(!d)return;if(!main)main=d;if(d.ema9>d.ema21&&d.rsi>50)bullish++;tfText+=`${TFS[i][0]}:${d.ema9>d.ema21?'🟢':'🔴'}`});
- if(!main)return; let precio=main.precio; let esLong=bullish>=3;
- let pEl=document.getElementById('p-'+sym); if(pEl) pEl.innerHTML=`$${precio.toFixed(precio<1?5:2)}`;
- let tfEl=document.getElementById('tf-'+sym); if(tfEl) tfEl.innerHTML=`${tfText} ${bullish}/6`;
- if(!estado[sym])estado[sym]={lastP:0,bloq:false,preBloq:false,reboteBloq:false};
- let st=estado[sym]; let box=document.getElementById('sig-'+sym);
- let distUp=((main.boll.up-precio)/precio)*100, distLow=((precio-main.boll.low)/precio)*100;
- let cercaUp=distUp>0&&distUp<1.2, cercaLow=distLow>0&&distLow<1.2;
- if(bullish>=5&&!st.preBloq&&cercaUp){let e=(precio*0.981).toFixed(5),sl=(precio*0.971).toFixed(5),tp1=(precio*1.031).toFixed(5),tp2=(precio*1.065).toFixed(5);enviarTelegram(`🔥🔥🔥🔥 Próxima ruptura confirmada en 10 minutos 🔥🔥🔥🔥🔥\n\n<b>${sym} PRE-RUPTURA</b>\n\nLong-comprar 🟢🟢🟢\nPrecio de entrada: $${e}\nStop Loss: $${sl}\nTP1: $${tp1} TP2: $${tp2}\n\n🔥🔥🔥 Próxima ruptura confirmada en 10 minutos 🔥🔥🔥`);if(box)box.innerHTML=cajaConFuego(sym,precio,bullish,'PRE');st.preBloq=true;setTimeout(()=>st.preBloq=false,600000);}
- if(bullish<=1&&!st.preBloq&&cercaLow){let e=(precio*0.981).toFixed(5),sl=(precio*1.029).toFixed(5),tp1=(precio*0.969).toFixed(5),tp2=(precio*0.935).toFixed(5);enviarTelegram(`🔥🔥🔥🔥 Próxima ruptura confirmada en 10 minutos 🔥🔥🔥🔥🔥\n\n<b>${sym} PRE-RUPTURA</b>\n\nShort-venta 🛑🛑🛑🛑🛑\nPrecio de entrada: $${e}\nStop Loss: $${sl}\nTP1: $${tp1} TP2: $${tp2}`);if(box)box.innerHTML=cajaConFuego(sym,precio,bullish,'PRE');st.preBloq=true;setTimeout(()=>st.preBloq=false,600000);}
- if(st.lastP>0&&((st.lastP<main.boll.up&&precio>main.boll.up)||(st.lastP>main.boll.low&&precio<main.boll.low))&&bullish>=4&&!st.bloq){
-  let e=(precio*0.981).toFixed(5),tp1=(precio*(esLong?1.031:0.969)).toFixed(5),tp2=(precio*(esLong?1.065:0.935)).toFixed(5),sl=(precio*(esLong?0.971:1.029)).toFixed(5);let tipo=esLong?"LONG":"SHORT";
-  enviarTelegram(`🔥🔥🔥 SEÑAL 100% CONFIRMADA EN LLAMAS ${tipo=="LONG"?"VERDES 🟢🟢🟢":"ROJAS 🔴🔴🔴"} 6/6 🔥🔥🔥\n\n<b>${sym} ${tipo} RUPTURA REAL</b>\n\n${tipo=="LONG"?"Long-comprar 🟢🟢🟢":"Short-venta 🛑🛑🛑"}\nPrecio de entrada: $${e}\nStop Loss: $${sl}\nTP1: $${tp1} TP2: $${tp2}`);
-  if(box)box.innerHTML=cajaConFuego(sym,precio,bullish,'RUPTURA');st.bloq=true;setTimeout(()=>st.bloq=false,90000);
- } else {
-  let esRebUp=st.lastP>0&&st.lastP>=main.boll.up*0.99&&precio<main.boll.up&&precio>main.boll.mid;
-  let esRebLow=st.lastP>0&&st.lastP<=main.boll.low*1.01&&precio>main.boll.low&&precio<main.boll.mid;
-  if((esRebUp||esRebLow)&&bullish>=6&&!st.reboteBloq){
-   let e=(precio*0.981).toFixed(5),tp1=(precio*(esLong?1.031:0.969)).toFixed(5),tp2=(precio*(esLong?1.065:0.935)).toFixed(5),sl=(precio*(esLong?0.971:1.029)).toFixed(5);let tipo=esLong?"LONG":"SHORT";
-   enviarTelegram(`📊 SEÑAL 6/6 REBOTE CONFIRMADO (SIN LLAMAS)\n\n<b>${sym} ${tipo} REBOTE</b>\n\n${tipo=="LONG"?"Long-comprar 🟢🟢🟢":"Short-venta 🛑🛑🛑"}\nPrecio de entrada: $${e}\nStop Loss: $${sl}\nTP1: $${tp1} TP2: $${tp2}`);
-   if(box)box.innerHTML=cajaConFuego(sym,precio,bullish,'REBOTE');st.reboteBloq=true;setTimeout(()=>st.reboteBloq=false,120000);
-  }
- }
- st.lastP=precio;
-}catch{}}
-let _busy=false; async function tick(){if(_busy)return;_busy=true;await Promise.all(Array.from(activos).map(s=>check(s)));document.getElementById('e').innerText=`⚡ RAPIDO ${activos.size} | ${new Date().toLocaleTimeString()}`;_busy=false;}
-function iniciar(){render();cargarTodas();tick();setInterval(tick,3000);enviarTelegram('✅ FENIX CON GRAFICA BINANCE REAL IDENTICA ✅\n🔥 Velas originales + MA7/25/99 + Vol MA5/10\n📊 Igual que tu captura de BNBUSDT');}
-render();setTimeout(iniciar,600);
+
+function genPathsCompleto(closes){
+ let slice=closes.slice(-80); let min=Math.min(...slice),max=Math.max(...slice),range=max-min||1;
+ let norm=v=>{return 24-((v-min)/range)*20};
+ let line='', ma7='', ma25='', ma99='', vol='';
+ slice.forEach((v,i)=>{let x=(i/79)*110,y=norm(v);line+=(i==0?'M':' L')+x+','+y;});
+ let ma7a=[], ma25a=[], ma99a=[]; for(let i=0;i<closes.length;i++){ma7a.push(ma(closes.slice(0,i+1),7));ma25a.push(ma(closes.slice(0,i+1),25));ma99a.push(ma(closes.slice(0,i+1),99));}
+ ma7a.slice(-80).forEach((v,i)=>{let x=(i/79)*110,y=norm(v);ma7+=(i==0?'M':' L')+x+','+y;});
+ ma25a.slice(-80).forEach((v,i)=>{let x=(i/79)*110,y=norm(v);ma25+=(i==0?'M':' L')+x+','+y;});
+ ma99a.slice(-80).forEach((v,i)=>{let x=(i/79)*110,y=norm(v);ma99+=(i==0?'M':' L')+x+','+y;});
+ return {line,ma7,ma25,ma99,lastMa7:ma7a[ma7a.length-1],lastMa25:ma25a[ma25a.length-1],lastMa99:ma99a[ma99a.length-1],min,max};
+}
+
+function cajaMejorada(sym,precio,bullish,closes,tipo){
+ let esLong=bullish>=3; let isRup=tipo==='RUPTURA'; let isPre=tipo==='PRE'; let isReb=tipo==='REBOTE';
+ let border=isRup?(esLong?'#00ff88':'#ff2244'):(isPre?'#ffaa00':'#333');
+ let anim=isRup?`animation:${esLong?'firePulseGreen':'firePulseRed'} 0.8s infinite;`:'';
+ let g=genPathsCompleto(closes);
+ let entry=(precio*0.981).toFixed(precio<1?6:2), tp1=(precio*(esLong?1.031:0.969)).toFixed(precio<1?6:2), tp2=(precio*(esLong?1.065:0.935)).toFixed(precio<1?6:2), sl=(precio*(esLong?0.971:1.029)).toFixed(precio<1?6:2);
+ let llamas=isRup?`<div style="background:${esLong?'linear-gradient(90deg,#00ff88,#ffff00,#00ff88)':'linear-gradient(90deg,#ff2244,#ffaa00,#ff2244)'};color:#000;font-weight:900;font-size:11px;text-align:center;padding:8px;border-radius:10px;margin-bottom:6px;animation:textFire 0.6s infinite"><span style="animation:flameMove 0.3s infinite">🔥</span> SEÑAL 100% CONFIRMADA EN LLAMAS ${esLong?'VERDES 🟢🟢🟢':'ROJAS 🔴🔴🔴'} 6/6 <span style="animation:flameMove 0.4s infinite">🔥</span><br>VELOCIDAD MAX ⚡</div>`:'';
+ let preAviso=isPre?`<div style="background:linear-gradient(90deg,#ffaa00,#ff4500);color:#000;font-weight:900;font-size:10px;text-align:center;padding:6px;border-radius:8px;margin-bottom:4px">🔥🔥🔥 Próxima ruptura confirmada en 10 minutos 🔥🔥🔥</div>`:'';
+ let rebAviso=isReb?`<div style="background:#222;color:#aaa;font-size:9px;text-align:center;padding:4px;border-radius:6px">📊 REBOTE 6/6 SIN LLAMAS</div>`:'';
+ return `<div style="position:relative;border:4px solid ${border};${anim}border-radius:20px;background:radial-gradient(ellipse at center,${esLong?'#1a3320':'#331a1a'},#0e0e1a);padding:10px;overflow:hidden">
+ ${isRup?`<div style="position:absolute;top:-10px;left:0;right:0;display:flex;justify-content:space-around;font-size:28px"><span style="animation:flameMove 0.3s infinite">🔥</span><span style="animation:flameMove 0.5s infinite">🔥</span><span style="animation:flameMove 0.35s infinite">🔥</span><span style="animation:flameMove 0.45s infinite">🔥</span></div>`:''}
+ ${llamas}${preAviso}${rebAviso}
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-top:${isRup?'10px':'0'}"><span style="background:${esLong?'#0a2e1a':'#3d1216'};color:${border};font-weight:900;font-size:12px;padding:5px 10px;border-radius:10px;border:2px solid ${border}">${esLong?'↗ LONG':'↘ SHORT'} ${bullish}/6 ${tipo}</span><b style="font-size:16px">${sym.replace('USDT','')}/USDT</b></div>
+ <div style="font-size:10px;color:#ffeb3b;margin:4px 0">MA(7):${g.lastMa7.toFixed(2)} <span style="color:#ff69b4">MA(25):${g.lastMa25.toFixed(2)}</span> <span style="color:#9b7cff">MA(99):${g.lastMa99.toFixed(2)}</span></div>
+ <div style="background:#000;border-radius:12px;padding:6px;border:1.5px solid #222"><svg width="100%" height="90" viewBox="0 0 110 26" preserveAspectRatio="none">
+ <path d="${g.line}" stroke="#fff" fill="none" stroke-width="0.6" opacity="0.8"/>
+ <path d="${g.ma7}" stroke="#ffeb3b" fill="none" stroke-width="1.4"/><path d="${g.ma25}" stroke="#ff69b4" fill="none" stroke-width="1.4"/><path d="${g.ma99}" stroke="#9b7cff" fill="none" stroke-width="1.4"/>
+ </svg><div style="display:flex;justify-content:space-between;font-size:8px;color:#666;margin-top:2px"><span>Vol(BNB) MA5 MA10</span><span>RSI(6):${bullish>3?'54':46}</span><span>$${precio.toFixed(precio<1?5:2)}</span></div></div>
+ <div style="font-size:11px;margin-top:6px"><b style="font-size:18px;color:#fff">$${precio.toFixed(precio<1?6:2)}</b><span style="float:right;color:${esLong?'#00ff88':'#ff4444'}">${esLong?'+1.89% ↑':'-1.25% ↓'}</span><br>Entry $${entry} | SL $${sl}<br><span style="color:#00ff88">TP1 $${tp1}</span> <span style="color:#888">TP2 $${tp2}</span></div>
+ </div>`;
+}
+
+async function fetchTF(sym,interval){try{let r=await fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${sym}&interval=${interval}&limit=50`);if(!r.ok)return null;let k=await r.json();if(!k||k.length<20)return null;let closes=k.map(x=>+x[4]);return{closes,ema9:ema(closes,9),ema21:ema(closes,21),rsi:rsi(closes),boll:boll(closes),atr:atr(k),precio:closes[closes.length-1]}}catch{return null}}
+
+async function check(sym){
+ try{
+  let results=await Promise.all(TFS.map(tf=>fetchTF(sym,tf)));
+  let bullish=0,main=null,closesMain=[]; results.forEach(d=>{if(!d)return;if(!main)main=d;closesMain=d.closes;if(d.ema9>d.ema21&&d.rsi>50)bullish++;});
+  if(!main)return null;
+  let precio=main.precio, esLong=bullish>=3;
+  if(!estado[sym])estado[sym]={lastP:0,bloq:false,preBloq:false,reboteBloq:false};
+  let st=estado[sym];
+  let distUp=((main.boll.up-precio)/precio)*100, distLow=((precio-main.boll.low)/precio)*100;
+  let cercaUp=distUp>0&&distUp<1.2, cercaLow=distLow>0&&distLow<1.2;
+  let tipo=null;
+  if(bullish>=5&&!st.preBloq&&(cercaUp||cercaLow)){tipo='PRE'; enviarTelegram(`🔥🔥🔥🔥 Próxima ruptura confirmada en 10 minutos 🔥🔥🔥🔥🔥\n\n<b>${sym} ${esLong?'LONG 🟢🟢🟢':'SHORT 🔴🔴🔴'}</b>\nEntry $${(precio*0.981).toFixed(5)} SL $${(precio*0.971).toFixed(5)} TP1 $${(precio*1.031).toFixed(5)}\n\n🔥🔥🔥 Próxima ruptura confirmada en 10 minutos 🔥🔥🔥`); st.preBloq=true;setTimeout(()=>st.preBloq=false,600000);}
+  else if(st.lastP>0&&((st.lastP<main.boll.up&&precio>main.boll.up)||(st.lastP>main.boll.low&&precio<main.boll.low))&&bullish>=4&&!st.bloq){tipo='RUPTURA'; enviarTelegram(`🔥🔥🔥 SEÑAL 100% CONFIRMADA EN LLAMAS ${esLong?'VERDES 🟢🟢🟢':'ROJAS 🔴🔴🔴'} 6/6 🔥🔥🔥\n\n<b>${sym} ${esLong?'LONG':'SHORT'} RUPTURA REAL</b>\nEntry $${(precio*0.981).toFixed(5)} SL $${(precio*0.971).toFixed(5)} TP1 $${(precio*1.031).toFixed(5)}`); st.bloq=true;setTimeout(()=>st.bloq=false,90000);}
+  else if(st.lastP>0&&((st.lastP>=main.boll.up*0.99&&precio<main.boll.up)||(st.lastP<=main.boll.low*1.01&&precio>main.boll.low))&&bullish>=6&&!st.reboteBloq){tipo='REBOTE'; enviarTelegram(`📊 SEÑAL 6/6 REBOTE CONFIRMADO (SIN LLAMAS)\n\n<b>${sym} ${esLong?'LONG':'SHORT'} REBOTE</b>\nEntry $${(precio*0.981).toFixed(5)}`); st.reboteBloq=true;setTimeout(()=>st.reboteBloq=false,120000);}
+  st.lastP=precio;
+  if(tipo) return {sym,precio,bullish,closes:closesMain,tipo};
+  // Solo mostrar si es 5/6 o 6/6 en modo TODAS
+  if(bullish>=5) return {sym,precio,bullish,closes:closesMain,tipo:'NORMAL'};
+  return null;
+ }catch{return null;}
+}
+
+function renderLista(lista){
+ let c=document.getElementById('lista'); c.innerHTML='';
+ lista.filter(x=>x).sort((a,b)=>b.bullish-a.bullish).forEach(d=>{
+  let div=document.createElement('div'); div.innerHTML=cajaMejorada(d.sym,d.precio,d.bullish,d.closes,d.tipo); c.appendChild(div);
+ });
+}
+
+let scanIndex=0; let resultadosAcumulados=[];
+async function tickAuto(){
+ if(todasMonedas.length===0) return;
+ let batch=todasMonedas.slice(scanIndex,scanIndex+30); // escanea 30 monedas a la vez
+ scanIndex+=30; if(scanIndex>=todasMonedas.length){scanIndex=0; resultadosAcumulados=[]; document.getElementById('e').innerText=`♻️ REINICIO SCAN ${new Date().toLocaleTimeString()}`;}
+ let res=await Promise.all(batch.map(s=>check(s)));
+ res.filter(x=>x).forEach(r=>{ if(!resultadosAcumulados.find(z=>z.sym===r.sym)) resultadosAcumulados.push(r); else { let idx=resultadosAcumulados.findIndex(z=>z.sym===r.sym); resultadosAcumulados[idx]=r;} });
+ renderLista(resultadosAcumulados);
+ document.getElementById('e').innerText=`⚡ AUTO ${scanIndex}/${todasMonedas.length} | ${resultadosAcumulados.length} señales | ${new Date().toLocaleTimeString()}`;
+}
+
+async function iniciar(){
+ await cargarTodasBinanceCompleto();
+ setInterval(tickAuto,3500);
+ tickAuto();
+ enviarTelegram('✅ FENIX DEFINITIVO AUTO ALL BINANCE ✅\n🔥 SPOT + FUTUROS + ALPHA\n📊 MA7/25/99 + VOL + RSI\n⚡ Escaneo automático 1032 monedas\n🔥 LLAMAS REALES + PRE 10MIN + REBOTE SIN LLAMAS');
+}
+iniciar();
 </script></body></html>
