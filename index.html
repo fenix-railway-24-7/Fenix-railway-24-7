@@ -33,32 +33,37 @@ function filtrarTodas(){ let q=document.getElementById('filtro').value.toUpperCa
 function addManual(){ let v=document.getElementById('buscar').value.trim().toUpperCase(); if(!v) return; if(!v.endsWith('USDT')) v+='USDT'; activos.add(v); saveActivos(); render(); document.getElementById('buscar').value=''; }
 function eliminar(sym){ activos.delete(sym); saveActivos(); delete estado[sym]; let el=document.getElementById('C-'+sym); if(el) el.remove(); }
 async function detectarNuevasMonedasSegundos(){ try{ let r=await fetch('https://api.binance.com/api/v3/exchangeInfo'); let d=await r.json(); for(let s of d.symbols){ if(s.symbol.endsWith('USDT') && s.status=='TRADING' && !monedasConocidas.has(s.symbol)){ monedasConocidas.add(s.symbol); todasMonedas.push(s.symbol); localStorage.setItem('fenix_todas', JSON.stringify(Array.from(monedasConocidas))); let rk=await fetch(`https://fapi.binance.com/fapi/v1/ticker/price?symbol=${s.symbol}`); let pd=await rk.json(); let precio=parseFloat(pd.price)||0; let box=document.getElementById('lista'); box.insertAdjacentHTML('afterbegin', cajaConFuego(s.symbol, precio, 'LONG', 6, 'NUEVO LISTADO ALPHA/SPOT DETECTADO EN SEGUNDOS')); beep(1200); activos.add(s.symbol); saveActivos(); render(); document.getElementById('newsBar').innerHTML=`🔥 NUEVO LISTADO BINANCE DETECTADO EN SEGUNDOS: ${s.symbol} - $${precio}`; } } }catch{} }
-function render(){ let c=document.getElementById('lista'); c.innerHTML=''; activos.forEach(m=>{ let stats=historial.filter(h=>h.symbol===m); let w=stats.filter(h=>h.resultado==='WIN').length; let l=stats.filter(h=>h.resultado==='LOSS').length; c.innerHTML+=`<div id="C-${m}" style="padding:8px;border-radius:10px;border:1px solid #333;background:#111;margin-top:0"><div style="font-weight:900;font-size:11px">${m} <span style="font-size:10px;color:${w>=l?'#00ff88':'#ff4444'}">(${w}W/${l}L)</span> <button onclick="eliminar('${m}')" style="float:right;background:#ff2222;color:#fff;border:0;padding:2px 6px;border-radius:4px;font-size:9px">🗑️</button></div><div style="font-size:18px;font-weight:900" id="p-${m}">$--</div><div id="tf-${m}" style="font-size:8px;color:#888;background:#000;padding:3px;border-radius:4px;margin:2px 0">7TF AR(16) SKYNET...</div><div id="sig-${m}" style="margin-top:4px"></div></div>`; }); }
+function render(){ let c=document.getElementById('lista'); c.innerHTML=''; activos.forEach(m=>{ let stats=historial.filter(h=>h.symbol===m); let w=stats.filter(h=>h.resultado==='WIN').length; let l=stats.filter(h=>h.resultado==='LOSS').length; c.innerHTML+=`<div id="C-${m}" style="padding:8px;border-radius:10px;border:1px solid #333;background:#111;margin-top:0"><div style="font-weight:900;font-size:13px">${m} <span style="font-size:11px;color:${w>=l?'#00ff88':'#ff4444'}">(${w}W/${l}L)</span> <button onclick="eliminar('${m}')" style="float:right;background:#ff2222;color:#fff;border:0;padding:3px 7px;border-radius:5px;font-size:10px">🗑️</button></div><div style="font-size:22px;font-weight:900" id="p-${m}">$--</div><div id="tf-${m}" style="font-size:10px;color:#888;background:#000;padding:4px;border-radius:4px;margin:2px 0">7TF AR(16) SKYNET...</div><div id="sig-${m}" style="margin-top:6px"></div></div>`; }); }
 function boll(arr){ let s=arr.slice(-20).reduce((a,b)=>a+b,0)/20; let st=Math.sqrt(arr.slice(-20).map(x=>(x-s)**2).reduce((a,b)=>a+b,0)/20); return{up:s+st*2, low:s-st*2, mid:s} }
 function ema(arr,p){ let k=2/(p+1); let e=arr[0]; for(let i=1;i<arr.length;i++) e=arr[i]*k+e*(1-k); return e; }
 function rsi(arr){ let g=0,l=0; for(let i=1;i<14;i++){ let d=arr[arr.length-i]-arr[arr.length-i-1]; if(d>0) g+=d; else l+=-d; } if(l==0) return 100; let rs=g/l; return 100-(100/(1+rs)); }
 function atr(klines){ let trs=[]; for(let i=1;i<klines.length;i++){ let h=parseFloat(klines[i][2]), l=parseFloat(klines[i][3]), pc=parseFloat(klines[i-1][4]); trs.push(Math.max(h-l, Math.abs(h-pc), Math.abs(l-pc))); } let avg=trs.slice(-14).reduce((a,b)=>a+b,0)/14; return avg==0? klines[klines.length-1][4]*0.015 : avg; }
 function beep(f){ try{ if(!au) au=new(window.AudioContext||window.webkitAudioContext)(); let o=au.createOscillator(),g=au.createGain(); o.connect(g); g.connect(au.destination); o.frequency.value=f; g.gain.value=.8; o.start(); setTimeout(()=>o.stop(),600); }catch{} if(navigator.vibrate) navigator.vibrate([400,100,400]); }
+
+// === SOLO ESTO CAMBIÓ - RECUADRO COMO TU IMAGEN BTC/USDT + ETH/USDT ===
 function cajaConFuego(sym, precio, bullishTipo, bullishCount, extraMsg){
-  let lev=parseInt(document.getElementById('lev').value)||20;
   let esLong = bullishCount>=4;
-  let border = esLong ? '#00ff88' : '#ff3344';
-  let badgeBg = esLong ? '#00ff88' : '#ff3344';
+  let border = esLong ? '#4ade80' : '#f87171';
+  let bgBadge = esLong ? '#14532d' : '#7f1d1d';
+  let badgeColor = esLong ? '#4ade80' : '#f87171';
+  let arrow = esLong ? '↗' : '↘';
   let badgeTxt = esLong ? 'LONG' : 'SHORT';
   let entry = (precio*0.981).toFixed(2);
   let current = precio.toFixed(2);
-  let pnl = esLong ? `+$${(precio*0.0065*lev).toFixed(2)}` : `-$${(precio*0.0012*lev).toFixed(2)}`;
-  let pctCur = esLong ? '+1.89%' : '-0.73%';
-  let pctPnl = esLong ? '+2.34%' : '-1.12%';
+  let pnl = esLong ? (precio*0.065).toFixed(2) : -(precio*0.012).toFixed(2);
+  let pnlTxt = esLong ? `+$${pnl}` : `-$${Math.abs(pnl).toFixed(2)}`;
+  let pctCurrent = esLong ? '+1.89% ↑' : '-0.73% ↑';
+  let pctPnl = esLong ? '+2.34% ↑' : '-1.12% ↓';
   let tp = esLong ? (precio*1.031).toFixed(2) : (precio*1.022).toFixed(2);
   let sl = esLong ? (precio*0.988).toFixed(2) : (precio*1.018).toFixed(2);
-  let path = esLong ? 'M0,20 Q15,16 30,12 T60,8 T90,4 T120,2' : 'M0,3 Q15,6 30,10 T60,15 T90,18 T120,20';
-  return `<div style="border:1.5px solid ${border};border-radius:10px;background:#151515;padding:8px;box-shadow:0 0 10px ${border}33">
-    <div style="display:flex;justify-content:space-between"><div style="display:flex;gap:4px;align-items:center"><span style="background:${badgeBg};color:${esLong?'#000':'#fff'};font-weight:900;font-size:8px;padding:2px 6px;border-radius:4px">${badgeTxt}</span><b style="font-size:11px;color:#fff">${sym.replace('USDT','')}/USDT</b></div><span style="font-size:6px;color:#666">BINANCE • ${lev}x LEVERAGE</span></div>
-    <div style="display:flex;justify-content:space-between;margin-top:5px;font-size:7px;color:#888"><span>Entry: $${entry}</span><span style="color:#fff;font-weight:700">$${current} <span style="color:${border}">${pctCur}</span></span></div>
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:5px"><div><div style="font-size:7px;color:#888">PnL</div><div style="font-size:14px;font-weight:900;color:${border}">${pnl}</div></div><div style="font-size:7px;color:${border}">${pctPnl}</div></div>
-    <div style="margin:5px 0"><svg width="100%" height="22" viewBox="0 0 120 22"><path d="${path}" stroke="${border}" fill="none" stroke-width="1.3"/></svg></div>
-    <div style="display:flex;justify-content:space-between;background:#1e1e1e;padding:4px 5px;border-radius:5px;font-size:6px"><div>Take Profit:<br><b style="color:#fff">$${tp}</b></div><div>Stop Loss:<br><b style="color:#fff">$${sl}</b></div><div style="width:6px;height:6px;background:${border};border-radius:1px;align-self:center"></div></div>
+  let chartPath = esLong ? 'M5,18 Q15,16 25,14 T40,10 T60,8 T85,4 T105,2' : 'M5,3 Q15,8 25,9 T40,10 T60,12 T85,16 T105,17';
+  return `<div style="border:1.5px solid ${border};border-radius:14px;background:#111118;padding:10px;box-shadow:0 0 12px ${border}33">
+    <div style="display:flex;justify-content:space-between;align-items:center"><div style="display:flex;gap:6px;align-items:center"><span style="background:${bgBadge};color:${badgeColor};font-weight:900;font-size:10px;padding:3px 8px;border-radius:6px">${arrow} ${badgeTxt}</span><b style="font-size:15px;color:#fff">${sym.replace('USDT','')}/USDT</b></div></div>
+    <div style="margin:10px 0;background:#1a1a25;border-radius:8px;padding:6px"><svg width="100%" height="42" viewBox="0 0 110 22"><path d="${chartPath}" stroke="${border}" fill="none" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    <div style="display:flex;justify-content:space-between;margin-top:4px"><span style="font-size:11px;color:#999">Entry $${entry}</span><span style="font-size:11px;color:#999">$${current}</span></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:2px 0"><b style="font-size:18px;color:#fff">$${current}</b><span style="font-size:13px;color:${border};font-weight:700">${pctCurrent}</span></div>
+    <div style="margin-top:6px"><div style="font-size:11px;color:#888">PnL</div><div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:18px;color:${border}">${pnlTxt}</b><span style="font-size:13px;color:${border};font-weight:700">${pctPnl}</span></div></div>
+    <div style="display:flex;justify-content:space-between;background:#1e1e28;padding:6px 8px;border-radius:8px;margin-top:8px;font-size:10px"><div><span style="color:${border}">●</span> Take Profit<br><b style="color:#fff;font-size:11px">$${tp}</b></div><div><span style="color:#f87171">●</span> Stop Loss<br><b style="color:#fff;font-size:11px">$${sl}</b></div></div>
   </div>`;
 }
 let pumpsData=[];
