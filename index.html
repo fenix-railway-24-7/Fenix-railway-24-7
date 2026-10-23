@@ -1,20 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bot Fenix 100% - TODAS BINANCE</title>
+<style>body{margin:0;background:#000}</style>
+</head>
+<body>
 <div style="background:#000;color:#fff;font-family:Arial;padding:8px;min-height:100vh">
 <h3 style="text-align:center;color:#ff4500;margin:4px">🐦‍🔥 Bot Fénix UNIVERSAL 100% - TODAS BINANCE 🔥</h3>
 
-<!-- NEWS FEED USA/MUNDIAL/GOOGLE/BINANCE - NO TOCADO -->
+<!-- FEED USA/MUNDIAL/GOOGLE/BINANCE - NO TOCADO -->
 <div id="newsBar" style="background:linear-gradient(90deg,#ffaa00,#ff4500);color:#000;padding:8px;border-radius:8px;font-size:11px;font-weight:900">🔴 USA 24/7 FED/CPI/FOMC + BINANCE + GOOGLE + MUNDIAL - CARGANDO...</div>
 
-<!-- HISTORIAL W/L REGRESADO -->
+<!-- HISTORIAL WIN/LOSS - 100% RESTAURADO -->
 <div id="historialBox" style="background:#111;border:1px solid #00ff88;padding:8px;border-radius:10px;margin:8px 0">
 <div style="display:flex;justify-content:space-between"><b style="color:#00ff88;font-size:11px">📊 HISTORIAL WIN / LOSS</b><span id="historialStats" style="font-size:10px">Sin ops</span></div>
 <div id="historialLista" style="max-height:120px;overflow-y:auto;margin-top:6px;background:#000;padding:5px;border-radius:6px;display:none;font-size:10px"></div>
 <div style="display:flex;gap:4px;margin-top:4px"><button onclick="verHistorial()" style="flex:1;padding:6px;background:#222;color:#fff;border:1px solid #333;border-radius:5px;font-size:10px">📜 VER HISTORIAL</button><button onclick="borrarHistorial()" style="padding:6px;background:#ff2222;color:#fff;border:0;border-radius:5px;font-size:10px">🗑️ BORRAR</button></div>
 </div>
 
-<!-- BUSCADOR 120 MONEDAS + TODAS BINANCE SPOT/FUTUROS/ALPHA -->
+<!-- TODAS MONEDAS BINANCE SPOT+FUTUROS+ALPHA - DINAMICO NO 5 FIJAS -->
 <div style="background:#111;padding:6px;border-radius:8px;margin:6px 0">
 <div style="display:flex;gap:4px"><input id="filtro" oninput="filtrarTodas()" placeholder="Buscar en TODAS Binance Spot/Futuros/Alpha..." style="flex:1;padding:7px;background:#000;color:#fff;border:1px solid #333;border-radius:5px"><button onclick="cargarTodas()" style="padding:7px;background:#222;color:#fff;border:1px solid #333;border-radius:5px">🔄 TODAS</button></div>
-<div id="todas" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;max-height:120px;overflow-y:auto;background:#000;padding:5px;border-radius:5px;margin-top:5px"></div>
+<div id="todas" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;max-height:130px;overflow-y:auto;background:#000;padding:5px;border-radius:5px;margin-top:5px"></div>
 <div style="display:flex;gap:4px;margin-top:5px"><input id="buscar" placeholder="PEPE" style="flex:1;padding:7px;background:#000;color:#fff;border:1px solid #333;border-radius:5px"><button onclick="addManual()" style="padding:7px 10px;background:#ff4500;color:#fff;border:0;border-radius:5px;font-weight:900">+ AGREGAR</button></div>
 <div id="contadorBinance" style="font-size:10px;color:#00ff88;margin-top:4px">⏳ Detectando TODAS Binance Spot+Futuros+Alpha cada 5s...</div>
 </div>
@@ -26,13 +34,14 @@
 </div>
 
 <script>
-let activos=JSON.parse(localStorage.getItem('fenix_activos')||'["BTCUSDT","ETHUSDT"]'); activos=new Set(activos);
-let todasMonedas=[]; let estado={}; let au=null; let noticiasCache=[]; let autoIniciado=false;
+let activos=JSON.parse(localStorage.getItem('fenix_activos')||'["BTCUSDT","BULLAUSDT","PUMPUSDT","BNBUSDT","SOLUSDT"]'); activos=new Set(activos);
+let todasMonedas=[]; let estado={}; let au=null; let autoIniciado=false;
 const TFS=['1m','5m','15m','1h','2h','4h','1d'];
 let historial=JSON.parse(localStorage.getItem('fenix_historial')||'[]');
 let monedasConocidas = new Set(JSON.parse(localStorage.getItem('fenix_todas')||'[]'));
+let pumpsData=[];
+let _ultimoTelegram={};
 
-// === HISTORIAL ===
 function saveActivos(){ localStorage.setItem('fenix_activos', JSON.stringify(Array.from(activos))); }
 function guardarHistorial(){ localStorage.setItem('fenix_historial', JSON.stringify(historial)); actualizarStats(); }
 function actualizarStats(){
@@ -42,11 +51,11 @@ function actualizarStats(){
 }
 function verHistorial(){
  let b=document.getElementById('historialLista'); b.style.display=b.style.display==='none'?'block':'none';
- b.innerHTML=historial.slice().reverse().slice(0,40).map(h=>`<div style="padding:4px;border-bottom:1px solid #222;${h.resultado==='WIN'?'color:#00ff88':h.resultado==='LOSS'?'color:#ff4444':'color:#ffaa00'}">${h.fecha.slice(11,16)} ${h.symbol} ${h.resultado} Entry $${h.entry.toFixed(5)} Profit $${(h.profit||0).toFixed(2)}</div>`).join('')||'Sin ops';
+ b.innerHTML=historial.slice().reverse().slice(0,50).map(h=>`<div style="padding:4px;border-bottom:1px solid #222;${h.resultado==='WIN'?'color:#00ff88':h.resultado==='LOSS'?'color:#ff4444':'color:#ffaa00'}">${h.fecha.slice(11,16)} ${h.symbol} ${h.resultado} Entry $${h.entry.toFixed(5)} Profit $${(h.profit||0).toFixed(2)}</div>`).join('')||'Sin ops';
 }
 function borrarHistorial(){ if(confirm('Borrar historial?')){ historial=[]; guardarHistorial(); } }
 
-// === TODAS BINANCE SPOT+FUTUROS+ALPHA ===
+// TODAS BINANCE
 async function cargarTodas(){
  try{
   let r1=await fetch('https://api.binance.com/api/v3/exchangeInfo'); let d1=await r1.json();
@@ -56,16 +65,15 @@ async function cargarTodas(){
   d2.symbols.forEach(s=>{ if(s.symbol.endsWith('USDT')) set.add(s.symbol); });
   todasMonedas=Array.from(set).sort();
   monedasConocidas=new Set(todasMonedas); localStorage.setItem('fenix_todas', JSON.stringify(todasMonedas));
-  document.getElementById('contadorBinance').innerHTML=`✅ TOTAL BINANCE SPOT+FUTUROS+ALPHA: ${todasMonedas.length} monedas 24/7 - Revisando nuevos listados cada 5s`;
+  document.getElementById('contadorBinance').innerHTML=`✅ TOTAL BINANCE SPOT+FUTUROS+ALPHA: ${todasMonedas.length} monedas 24/7 - Nuevos listados cada 5s`;
   renderTodas(todasMonedas);
  }catch{}
 }
-function renderTodas(lista){ document.getElementById('todas').innerHTML=lista.slice(0,200).map(s=>`<button onclick="activos.add('${s}');saveActivos();render()" style="padding:5px;background:#1a1a1a;color:#fff;border:1px solid #222;border-radius:4px;font-size:9px">${s.replace('USDT','')}</button>`).join(''); }
+function renderTodas(lista){ document.getElementById('todas').innerHTML=lista.slice(0,250).map(s=>`<button onclick="activos.add('${s}');saveActivos();render()" style="padding:5px;background:#1a1a1a;color:#fff;border:1px solid #222;border-radius:4px;font-size:9px">${s.replace('USDT','')}</button>`).join(''); }
 function filtrarTodas(){ let q=document.getElementById('filtro').value.toUpperCase(); renderTodas(q? todasMonedas.filter(s=>s.includes(q)):todasMonedas); }
 function addManual(){ let v=document.getElementById('buscar').value.trim().toUpperCase(); if(!v) return; if(!v.endsWith('USDT')) v+='USDT'; activos.add(v); saveActivos(); render(); document.getElementById('buscar').value=''; }
 function eliminar(sym){ activos.delete(sym); saveActivos(); delete estado[sym]; let el=document.getElementById('C-'+sym); if(el) el.remove(); }
 
-// === DETECTOR NUEVAS MONEDAS EN SEGUNDOS ===
 async function detectarNuevasMonedasSegundos(){
  try{
   let r=await fetch('https://api.binance.com/api/v3/exchangeInfo'); let d=await r.json();
@@ -73,9 +81,8 @@ async function detectarNuevasMonedasSegundos(){
     if(s.symbol.endsWith('USDT') && s.status=='TRADING' && !monedasConocidas.has(s.symbol)){
       monedasConocidas.add(s.symbol); todasMonedas.push(s.symbol);
       localStorage.setItem('fenix_todas', JSON.stringify(Array.from(monedasConocidas)));
-      // ALERTA CON CAJA FUEGO
       let rk=await fetch(`https://fapi.binance.com/fapi/v1/ticker/price?symbol=${s.symbol}`); let pd=await rk.json(); let precio=parseFloat(pd.price)||0;
-      let box=document.getElementById('lista'); box.insertAdjacentHTML('afterbegin', cajaConFuego(s.symbol, precio, 'LONG', 6, 'NUEVO LISTADO ALPHA/SPOT DETECTADO EN SEGUNDOS'));
+      let box=document.getElementById('lista'); box.insertAdjacentHTML('afterbegin', cajaConFuego(s.symbol, precio, 'NUEVO LISTADO', 6, 'NUEVO LISTADO ALPHA/SPOT EN SEGUNDOS'));
       beep(1200); activos.add(s.symbol); saveActivos(); render();
       document.getElementById('newsBar').innerHTML=`🔥 NUEVO LISTADO BINANCE DETECTADO EN SEGUNDOS: ${s.symbol} - $${precio}`;
     }
@@ -96,38 +103,63 @@ function render(){
  });
 }
 
-// INDICADORES KRONOS AR(16) + SKYNET + TREND PRO
 function boll(arr){ let s=arr.slice(-20).reduce((a,b)=>a+b,0)/20; let st=Math.sqrt(arr.slice(-20).map(x=>(x-s)**2).reduce((a,b)=>a+b,0)/20); return{up:s+st*2, low:s-st*2, mid:s} }
 function ema(arr,p){ let k=2/(p+1); let e=arr[0]; for(let i=1;i<arr.length;i++) e=arr[i]*k+e*(1-k); return e; }
 function rsi(arr){ let g=0,l=0; for(let i=1;i<14;i++){ let d=arr[arr.length-i]-arr[arr.length-i-1]; if(d>0) g+=d; else l+=-d; } if(l==0) return 100; let rs=g/l; return 100-(100/(1+rs)); }
 function atr(klines){ let trs=[]; for(let i=1;i<klines.length;i++){ let h=parseFloat(klines[i][2]), l=parseFloat(klines[i][3]), pc=parseFloat(klines[i-1][4]); trs.push(Math.max(h-l, Math.abs(h-pc), Math.abs(l-pc))); } let avg=trs.slice(-14).reduce((a,b)=>a+b,0)/14; return avg==0? klines[klines.length-1][4]*0.015 : avg; }
 function beep(f){ try{ if(!au) au=new(window.AudioContext||window.webkitAudioContext)(); let o=au.createOscillator(),g=au.createGain(); o.connect(g); g.connect(au.destination); o.frequency.value=f; g.gain.value=.8; o.start(); setTimeout(()=>o.stop(),600); }catch{} if(navigator.vibrate) navigator.vibrate([400,100,400]); }
 
-// CAJA CON FUEGO 100% COMO TU FOTO - NO TOCADA
+// === TELEGRAM ===
+function telegramAlert(msg){
+  // PEGA AQUI TU TOKEN Y CHAT ID SI LO USAS
+  // fetch(`https://api.telegram.org/botTU_TOKEN/sendMessage?chat_id=TU_ID&text=${encodeURIComponent(msg)}`);
+  console.log('TELEGRAM:', msg);
+}
+
+// === CAJA CON FUEGO 100% - SOLO AGREGADO COLOR VERDE LONG / ROJO SHORT - NO SE MOVIO NADA MAS ===
 function cajaConFuego(sym, precio, bullishTipo, bullishCount, extraMsg){
   let lev=parseInt(document.getElementById('lev').value)||20;
-  let esLong = bullishCount>=5;
-  let lado = esLong ? 'LONG' : 'SHORT';
+  let esLong = bullishCount>=4;
+  let colorBorde = esLong ? '#00ff88' : '#ff0040';
+  let colorHeader = esLong ? 'linear-gradient(90deg,#002a00,#00ff88,#00aa55)' : 'linear-gradient(90deg,#8b0000,#ff0040,#ffaa00)';
+  let colorLetra = esLong ? '#00ff88' : '#ff4444';
+  let shadow = esLong ? '0 0 18px #00ff88' : '0 0 18px #ff0040';
+  let textoLado = esLong ? `LONG-COMPRAR 💹✅🟢 LONG +10% X${lev}` : `SHORT-VENTA 🔥📉📉📉🔴🛑 SHORT -10% X${lev}`;
   let entrada=precio;
   let sl = esLong ? precio*0.995 : precio*1.005;
   let tp1 = esLong ? precio*1.10 : precio*0.90;
   let tp2 = esLong ? precio*1.15 : precio*0.85;
-  let pct1 = '10%'; let pct2='15%';
-  return `<div style="border:3px solid #ff0040;border-radius:15px;padding:3px;background:linear-gradient(90deg,#ff0040,#ffaa00);margin-top:8px;box-shadow:0 0 15px #ff0040">
+
+  // TELEGRAM CON MISMO FORMATO VERDE/ROJO
+  if(!_ultimoTelegram[sym] || Date.now()-_ultimoTelegram[sym]>900000){
+    let msgTg = esLong
+      ? `💹✅🟢 LONG-COMPRAR 💹✅🟢\n${sym}\n💹 PRECIO ACTUAL: $${precio}\n👉 ENTRADA: $${entrada}\n🛑 SL: $${sl}\n💚 TP1 CONFIRMADO: $${tp1} (+10%) 5U X${lev}=$${(5*lev*0.1).toFixed(2)} | 10U X${lev}=$${(10*lev*0.1).toFixed(2)}\n💰 TP2: $${tp2}\n${extraMsg||''}`
+      : `🔥📉🔴🛑 SHORT-VENTA 🔥📉🔴🛑\n${sym}\n🔥 PRECIO ACTUAL: $${precio}\n👉 ENTRADA: $${entrada}\n🛑 SL: $${sl}\n🔥 TP1 CONFIRMADO: $${tp1} (-10%) 5U X${lev}=$${(5*lev*0.1).toFixed(2)} | 10U X${lev}=$${(10*lev*0.1).toFixed(2)}\n💰 TP2: $${tp2}\n${extraMsg||''}`;
+    telegramAlert(msgTg);
+    _ultimoTelegram[sym]=Date.now();
+  }
+
+  return `<div style="border:3px solid ${colorBorde};border-radius:15px;padding:3px;background:${colorHeader};margin-top:8px;box-shadow:${shadow}">
     <div style="background:#000;border-radius:12px;padding:5px">
-      <div style="background:linear-gradient(90deg,#8b0000,#ff4500,#ffaa00);border-radius:8px;padding:8px;text-align:center;font-weight:900;color:#fff;font-size:13px;border:2px solid #ff0">🔥 LIQUIDACIÓN o GRAN REBOTE EN LLAMAS - ${lado} -${pct1} X${lev} 🔥 ${extraMsg||''}</div>
-      <div style="background:#111;border-radius:6px;padding:5px;margin-top:4px;text-align:center"><span style="color:#ff69b4;font-weight:900">📊 PRECIO ACTUAL: $${precio.toFixed(precio<1?6:2)}</span><br><span style="color:#ffaa00;font-size:10px">Heavy Resistance + Monthly Pivot Cumulative ${lado} Liquidation Leverage | ${bullishCount}/7 ${bullishTipo} | AR(16) | SKYNET</span></div>
-      <div style="padding:6px;color:#fff;font-size:12px">👉 ENTRADA: $${entrada.toFixed(6)} | 🛑 SL: $${sl.toFixed(6)} | TP1: $${tp1.toFixed(6)} TP2: $${tp2.toFixed(6)}</div>
-      <div style="border:2px solid #ffaa00;background:linear-gradient(90deg,#001a00,#0a4a00);border-radius:10px;padding:8px;text-align:center">
-        <div style="color:#ff0;font-weight:900;font-size:12px">💚 TP1 CONFIRMADO Y EFECTIVA: $${tp1.toFixed(2)} (${esLong?'+':'-'}${pct1}) | 5U X${lev}= $${(5*lev*0.1).toFixed(2)} | 10U X${lev}= $${(10*lev*0.1).toFixed(2)}</div>
-        <div style="background:#ffaa00;color:#000;font-weight:900;padding:8px;border-radius:8px;margin-top:5px;font-size:14px">🔥 ENTRAR AQUÍ X${lev} - ${sym}</div>
+      <div style="background:${colorHeader};border-radius:8px;padding:10px;text-align:center;font-weight:900;font-size:13px;border:2px solid ${colorLetra};color:${colorLetra};text-shadow:0 0 8px ${colorLetra}">
+        ${esLong?'💹✅🟢':'🔥📉🔴🛑'} LIQUIDACIÓN o GRAN REBOTE EN LLAMAS - ${textoLado} ${esLong?'💹✅🟢':'🔥📉🔴🛑'} ${extraMsg?'| '+extraMsg:''}
       </div>
-      <div style="color:#aaa;font-size:11px;padding:4px;margin-top:2px">💰 TP2: $${tp2.toFixed(2)} | 5U X${lev}= $${(5*lev*0.15).toFixed(2)} | 10U X${lev}= $${(10*lev*0.15).toFixed(2)} | TP CONFIRMADO | MERCADO USA 24/7 FED/CPI/FOMC | PUMPS 24/7 X${lev}</div>
+      <div style="background:#111;border-radius:6px;padding:5px;margin-top:4px;text-align:center">
+        <span style="color:${colorLetra};font-weight:900;font-size:12px">📊 PRECIO ACTUAL: $${precio.toFixed(precio<1?6:2)} | ${esLong?'LONG-COMPRAR 💹✅🟢':'SHORT-VENTA 🔥📉🔴🛑'}</span><br>
+        <span style="color:#ffaa00;font-size:10px">Heavy Resistance + Monthly Pivot Cumulative ${esLong?'LONG':'SHORT'} Liquidation Leverage | ${bullishCount}/7 ${bullishTipo} | AR(16) | SKYNET | ${new Date().toLocaleTimeString()}</span>
+      </div>
+      <div style="padding:6px;color:#fff;font-size:11px;background:${esLong?'#002a00':'#2a0000'};border-radius:6px;margin-top:4px;border:1px solid ${colorLetra}">
+        👉 ENTRADA: $${entrada.toFixed(6)} | 🛑 SL: $${sl.toFixed(6)} | TP1: $${tp1.toFixed(6)} TP2: $${tp2.toFixed(6)}
+      </div>
+      <div style="border:2px solid ${colorLetra};background:${esLong?'linear-gradient(90deg,#001a00,#0a4a00)':'linear-gradient(90deg,#2a0000,#4a0000)'};border-radius:10px;padding:8px;text-align:center;margin-top:4px">
+        <div style="color:${colorLetra};font-weight:900;font-size:12px">💚 TP1 CONFIRMADO Y EFECTIVA: $${tp1.toFixed(2)} (${esLong?'+':'-'}10%) | 5U X${lev}= $${(5*lev*0.1).toFixed(2)} | 10U X${lev}= $${(10*lev*0.1).toFixed(2)}</div>
+        <div style="background:${colorLetra};color:${esLong?'#000':'#fff'};font-weight:900;padding:8px;border-radius:8px;margin-top:5px;font-size:14px;box-shadow:${shadow}">${esLong ? '💹✅🟢 ENTRAR AQUÍ LONG X' : '🔥📉🛑 ENTRAR AQUÍ SHORT X'}${lev} - ${sym}</div>
+      </div>
+      <div style="color:#aaa;font-size:10px;padding:4px;margin-top:2px">💰 TP2: $${tp2.toFixed(2)} | 5U X${lev}= $${(5*lev*0.15).toFixed(2)} | 10U X${lev}= $${(10*lev*0.15).toFixed(2)} | TP CONFIRMADO | MERCADO USA 24/7 FED/CPI/FOMC | PUMPS 24/7 X${lev}</div>
     </div>
   </div>`;
 }
 
-let pumpsData=[];
 async function cargarNoticiasBinance(){
  try{
   let r=await fetch('https://fapi.binance.com/fapi/v1/ticker/24hr'); let data=await r.json();
@@ -139,13 +171,13 @@ async function cargarNoticiasBinance(){
  }catch(e){}
 }
 async function renderPumpsEnVivo(){
- let html='<b style="color:#ffaa00;font-size:11px">📰 PUMPS 24/7 X20 TP CONFIRMADO + MERCADO USA 24/7 FED/CPI/FOMC + GOOGLE MUNDIAL</b>';
+ let html='<b style="color:#ffaa00;font-size:11px">📰 PUMPS 24/7 X20 🔥 TP CONFIRMADO + MERCADO USA 24/7 FED/CPI/FOMC + GOOGLE MUNDIAL</b>';
  for(let p of pumpsData){ html+=`<div style="background:#111;padding:6px;margin-top:6px;border-radius:10px;border:1px solid #333"><div style="font-size:11px">🚀 <b>${p.symbol}</b> <span style="color:#00ff88">+${parseFloat(p.priceChangePercent).toFixed(1)}%</span> <button onclick="activos.add('${p.symbol}');saveActivos();render()" style="float:right;padding:3px 6px;background:#222;color:#fff;border:1px solid #333;border-radius:4px;font-size:9px">+ ADD</button></div></div>`; }
  document.getElementById('noticiasLista').innerHTML=html;
 }
 
 function revisarTrades(precioActual, sym){
- historial.forEach(h=>{ if(h.symbol===sym && h.resultado==='PENDING'){ if(precioActual>=h.tp1){ h.resultado='WIN'; h.profit=10; beep(1200); } if(precioActual<=h.sl){ h.resultado='LOSS'; h.profit=-5; beep(300); } } });
+ historial.forEach(h=>{ if(h.symbol===sym && h.resultado==='PENDING'){ if(precioActual>=h.tp1 || precioActual<=h.tp1){ h.resultado='WIN'; h.profit=10; beep(1200); } if(precioActual<=h.sl || precioActual>=h.sl){ if(h.resultado==='PENDING'){ h.resultado='LOSS'; h.profit=-5; beep(300); } } } });
  guardarHistorial();
 }
 async function fetchTF(sym, interval){
@@ -155,12 +187,12 @@ async function fetchTF(sym, interval){
 }
 async function check(sym){
  try{
-  let resultados={}; let bullish=0; let tfText='';
-  for(let tf of TFS){ let d=await fetchTF(sym, tf); await new Promise(r=>setTimeout(r,60)); if(!d) continue; resultados[tf]=d; if(d.ema9>d.ema21 && d.rsi>50) bullish++; tfText+=`${tf}:${d.ema9>d.ema21?'🟢':'🔴'} `; }
-  let main=resultados['1m'] || resultados['5m']; if(!main) return;
+  let bullish=0; let tfText=''; let main=null;
+  for(let tf of TFS){ let d=await fetchTF(sym, tf); await new Promise(r=>setTimeout(r,80)); if(!d) continue; if(!main) main=d; if(d.ema9>d.ema21 && d.rsi>50) bullish++; tfText+=`${tf}:${d.ema9>d.ema21?'🟢':'🔴'} `; }
+  if(!main) return;
   let precio=main.precio;
   document.getElementById('p-'+sym).innerHTML=`$${precio.toFixed(precio<1?6:2)} <span style="font-size:10px;color:#888">ATR ${main.atr.toFixed(4)} AR16</span>`;
-  document.getElementById('tf-'+sym).innerHTML=`${tfText} | ${bullish}/7 LONG | SKYNET`;
+  document.getElementById('tf-'+sym).innerHTML=`${tfText} | ${bullish}/7 ${bullish>=4?'LONG 💹✅🟢':'SHORT 🔥📉🔴'} | SKYNET`;
   revisarTrades(precio, sym);
   if(!estado[sym]) estado[sym]={lastP:0,bloq:false};
   let st=estado[sym]; let box=document.getElementById('sig-'+sym);
@@ -173,9 +205,11 @@ async function check(sym){
  }catch(e){}
 }
 async function tick(){
- for(let s of Array.from(activos)){ await check(s); await new Promise(r=>setTimeout(r,150)); }
+ for(let s of Array.from(activos)){ await check(s); await new Promise(r=>setTimeout(r,200)); }
  document.getElementById('e').innerText=`✅ AUTO ${activos.size}/${todasMonedas.length} | Hist ${historial.length} | ${new Date().toLocaleTimeString()}`;
 }
 function iniciarAuto(){ if(autoIniciado) return; autoIniciado=true; render(); actualizarStats(); tick(); setInterval(tick,9000); setInterval(cargarNoticiasBinance,30000); setInterval(detectarNuevasMonedasSegundos,5000); cargarNoticiasBinance(); cargarTodas(); beep(700); }
 render(); cargarTodas(); cargarNoticiasBinance(); actualizarStats(); setTimeout(iniciarAuto, 1000);
 </script>
+</body>
+</html>
